@@ -1,0 +1,169 @@
+{% extends 'base.html' %} {% block content %}
+
+    <div id="owl-demo" class="owl-carousel owl-theme hero-slider">
+        {% for b in banners %}
+            <div class="item link">
+                <img src="media/{{ b.image }}">
+                <div class="text-center" style="margin-top:10px">
+                    <a class="btn btn-primary" href="{{ b.category.get_absolute_url }}">
+                        <span class="text-uppercase">découvrir</span>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Categories Section-->
+    <section class="categories" style="padding-top:10px;">
+        <div class="container">
+            <header class="text-center">
+                <h2 class="text">Découvrez nos catégories</h2>
+            </header>
+            <div class="row text-left mt-3">
+                {% for category in categories %}
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-3 mb-3 mx-auto">
+                        <a href="{{ category.get_absolute_url }}">
+                            <div class="card">
+                                <div class="view overlay hm-white-slight z-depth-1">
+                                    <div style=" background: url(media/{{ category.image }}) no-repeat center center;-webkit-background-size: cover;height: 200px;"></div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="content">
+                                        <h3 class="h5">{{ category.name }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                {% endfor %}
+            </div>
+    </section>
+    <!-- Collection -->
+    {% for category in categories %}
+        <section class="collection {% if forloop.counter|divisibleby:2 %}{% else %}gray-bg{% endif %}"
+                 style=" padding-bottom: 10px;">
+            <div class="container">
+                <header class="text-center">
+                    <h2 class="text-uppercase">
+                        <small>PRODUITS POPULAIRES</small>
+                        {{ category.name }}
+                    </h2>
+                </header>
+                <div class="row">
+                    {% for product in category.get_featured_products %}
+                        <div class="col-8 col-md-4 col-lg-3 mb-3 mx-auto">
+                            {% include "productCard.html" %}
+                        </div>
+                    {% endfor %}
+
+                </div>
+        </section>
+    {% endfor %}
+    <!-- Blog Section-->
+    <section class="blog gray-bg">
+        <div class="container">
+            <header class="text-center">
+                <h2 class="text-uppercase">Nos derniers articles</h2>
+            </header>
+            <div class="row">
+                <!-- post-->
+                <div class="col-lg-12 ">
+                    <div class="post post-gray d-flex align-items-center flex-md-row flex-column">
+                        <div class="thumbnail d-flex-align-items-center justify-content-center">
+                            <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/images/he0/hfd/9110603038750/razer-blade-stealth-13-hero-mobile.jpg"
+                                 alt="...">
+                        </div>
+                        <div class="info">
+                            <h4 class="h5">
+                                <a href="post.html">Newest photo apps </a>
+                            </h4>
+                            <span class="date"><i class="fa fa-clock-o"></i>May 10th 2016</span>
+                            <p>ellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
+                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
+                                Aenean ultricies mi vitae est. </p>
+                            <a href="post.html" class="read-more">Read More<i class="fa fa-long-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="post post-gray d-flex align-items-center flex-md-row flex-column">
+
+                        <div class="info">
+                            <h4 class="h5">
+                                <a href="post.html">Newest photo apps </a>
+                            </h4>
+                            <span class="date"><i class="fa fa-clock-o"></i>May 10th 2016</span>
+                            <p>ellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
+                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
+                                Aenean ultricies mi vitae est. </p>
+                            <a href="post.html" class="read-more">Read More<i class="fa fa-long-arrow-right"></i></a>
+                        </div>
+                        <div class="thumbnail d-flex-align-items-center justify-content-center">
+                            <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/images/he0/hfd/9110603038750/razer-blade-stealth-13-hero-mobile.jpg"
+                                 alt="...">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="post post-gray d-flex align-items-center flex-md-row flex-column">
+
+                        <div class="info">
+                            <h4 class="h5">
+                                <a href="post.html">Newest photo apps </a>
+                            </h4>
+                            <span class="date"><i class="fa fa-clock-o"></i>May 10th 2016</span>
+                            <p>ellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
+                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
+                                Aenean ultricies mi vitae est. </p>
+                            <a href="post.html" class="read-more">Read More<i class="fa fa-long-arrow-right"></i></a>
+                        </div>
+                        <div class="thumbnail d-flex-align-items-center justify-content-center">
+                            <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/images/he0/hfd/9110603038750/razer-blade-stealth-13-hero-mobile.jpg"
+                                 alt="...">
+                        </div>
+                    </div>
+                </div>
+                <!-- /end post-->
+            </div>
+        </div>
+    </section>
+    <!-- Brands Section-->
+    <section class="brands">
+        <div class="container">
+            <!-- Brands Slider-->
+            <div class="owl-carousel owl-theme brands-slider">
+                <!-- item-->
+                <div class="item d-flex align-items-center justify-content-center">
+                    <div class="brand d-flex align-items-center">
+                        <img src="https://yt3.ggpht.com/a/AGF-l79_Wt7ESATI74kJxTR_Vb4O7suwKHieH_ka9g=s900-mo-c-c0xffffffff-rj-k-no"
+                             alt="..." class="img-fluid">
+                    </div>
+                </div>
+                <div class="item d-flex align-items-center justify-content-center">
+                    <div class="brand d-flex align-items-center">
+                        <img src="http://pngimg.com/uploads/intel/intel_PNG24.png" alt="..." class="img-fluid">
+                    </div>
+                </div>
+                <div class="item d-flex align-items-center justify-content-center">
+                    <div class="brand d-flex align-items-center">
+                        <img src="https://seeklogo.com/images/A/AMD-logo-B5E0D58D48-seeklogo.com.png" alt="..."
+                             class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="scrollTop">
+        <i class="fa fa-long-arrow-up"></i>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#owl-demo").owlCarousel({
+                navigation: true,
+                slideSpeed: 300,
+                paginationSpeed: 400,
+                singleItem: true,
+                autoPlay: 1000
+            });
+        });
+    </script>
+{% endblock content %}

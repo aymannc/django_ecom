@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% block content %}
+    <!-- Hero Section-->
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h1>Your orders</h1>
+                    <p class="lead">Your orders in one place.</p>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+                        <li class="breadcrumb-item active">Orders</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="padding-small">
+        <div class="container">
+            <div class="row">
+                <!-- Customer Sidebar-->
+                {% show_profile_sidebar %}
+                <div class="col-lg-8 col-xl-9 pl-lg-3">
+                    <table class="table table-hover table-responsive-md">
+                        <thead>
+                        <tr>
+                            <th>Order reference</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th class="text-center" colspan="2">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <th><a href="{% url "order-details"  ref=order.ref_code %}">{{ order.ref_code }}</a>
+                                </th>
+                                <td>{{ order.ordered_date|date:"d/m/Y" }}</td>
+                                <td>{{ order.get_total_coupon }}DH</td>
+                                <td><span
+                                        class="badge badge-{{ order.get_tag_type }} text-white">{{ order.get_order_status_display }}</span>
+                                </td>
+
+                                {% for action in order.get_product_actions %}
+
+                                    {% if  action == "modify" %}
+                                        <td><a href="{% url "order-modify"  ref=order.ref_code %}"
+                                               class="btn btn-warning btn-sm ">Modify</a></td>
+                                    {% elif  action == "cancel" %}
+                                        <td><a href="{% url "order-cancel"  ref=order.ref_code %}"
+                                               class="btn btn-danger btn-sm">Cancel</a></td>
+                                    {% elif  action == "track" %}
+                                        <td><a href="{% url "Order reference"  ref=order.ref_code %}"
+                                               class="btn btn-success btn-sm">Track</a></td>
+                                    {% elif  action == "re-order" %}
+                                        <td><a href="{% url "order-reorder"  ref=order.ref_code %}"
+                                               class="btn btn-secondary btn-sm">Reorder</a></td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer-->
+{% endblock content %}

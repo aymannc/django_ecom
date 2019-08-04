@@ -1,0 +1,16 @@
+{% for category in categories %}
+    <div class="col-lg-3">
+        <ul class="list-unstyled">
+            <strong class="text-uppercase">
+                <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+            </strong>
+            {% for child in category.child_categories.all %}
+                <li><a href="{{ child.get_absolute_url }}">{{ child.name }}
+                    {% for tag in child.tags.all %}
+                        <span class="badge badge-{{ tag.get_type_display }} ml-2">{{ tag.tag }}</span>
+                    {% endfor %}
+                </a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endfor %}

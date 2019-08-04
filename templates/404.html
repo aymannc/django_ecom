@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <h1>Page not found</h1>
+        </div>
+    </section>
+    <!-- text page-->
+    <section class="padding-small ">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-8 col-lg-10">
+                    <h2 class="text-superbig">404</h2>
+                    <p class="lead">We don't know what what happened but that <strong>page is not here</strong>.</p>
+                    <p class="lead">Please <a href="#" class="search text-bold">use search</a> or <a href="index-2.html"
+                                                                                                     class="text-bold">start
+                        from the homepage</a>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $(function () {
+            var $grid = $('.masonry-wrapper').masonry({
+                itemSelector: '.item',
+                columnWidth: '.item',
+                percentPosition: true,
+                transitionDuration: 0,
+            });
+
+            $grid.imagesLoaded().progress(function () {
+                $grid.masonry();
+            });
+        })
+    </script>
+{% endblock pageContent %}

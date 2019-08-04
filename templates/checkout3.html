@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% block content %}
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h1>Checkout</h1>
+                    <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+                        <li class="breadcrumb-item active">Checkout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Checkout Forms-->
+    <section class="checkout">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Address</a></li>
+                        <li class="nav-item"><a href={% url "delivery" %} class="nav-link">Delivery Method </a></li>
+                        <li class="nav-item"><a href={% url "payment" %} class="nav-link active">Payment Method </a>
+                        </li>
+                        <li class="nav-item"><a href="#" class="nav-link disabled">Order Review</a></li>
+                    </ul>
+                    {% if payment_methods %}
+                        <div class="tab-content">
+                            <div id="headingTwo" role="tab" class="card-header text-center">
+                                <h6>Étape 2 : Choisir votre méthode de paiement</h6>
+                            </div>
+                            <div id="delivery-method" class="tab-block m-5">
+
+                                <form method="POST" id="paymentform">
+                                    {% csrf_token %}
+                                    <div class="row mx-auto">
+                                        {% for payment_method in payment_methods %}
+                                            <div class="col-4 text-center mx-auto">
+                                                <input {% if forloop.first %}checked{% else %}{% endif %}
+                                                       type="radio" name="e2option_id" value="{{ payment_method.id }}"
+                                                       id="option{{ forloop.counter }}" class="radio-template">
+                                                <label for="option{{ forloop.counter }}">
+                                                    <strong>{{ payment_method.name }}</strong>
+                                                    <br><span
+                                                        class="label-description">{{ payment_method.description }}</span></label>
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+                                </form>
+
+                                <div class="CTAs d-flex justify-content-between flex-column flex-lg-row">
+                                    <a href="{% url "payment" %} " class="btn btn-template-outlined wide prev"><i
+                                            class="fa fa-angle-left"></i>Étape 1</a>
+                                    <button type="submit " form="paymentform" class="btn btn-template wide">Order Review
+                                        <i
+                                                class="fa fa-angle-right"></i></button>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="tab-content">
+                            <div id="headingTwo" role="tab" class="card-header text-center">
+                                <h6>Étape 1 : Choisir votre modalité de paiement</h6>
+                            </div>
+                            <div id="delivery-method" class="tab-block m-5">
+
+                                <form method="post" id="paymentform">
+                                    {% csrf_token %}
+                                    <div class="row mx-auto">
+                                        {% if payment_option %}
+                                            <div class="col-4 text-center mx-auto">
+                                                <input type="radio" checked name="option_id"
+                                                       value="{{ payment_option.id }}"
+                                                       id="option" class="radio-template">
+                                                <label for="option">
+                                                    <strong>{{ payment_option.name }}</strong>
+                                                    <br><span
+                                                        class="label-description">{{ payment_option.description }}</span></label>
+                                            </div>
+                                        {% endif %}
+                                        {% for payment_option in payment_options %}
+                                            <div class="col-4 text-center mx-auto">
+                                                <input
+                                                        {% if payment_option %}{% else %}{% if forloop.first %}checked{% else %}{% endif %} {% endif %}
+                                                        type="radio" name="option_id" value="{{ payment_option.id }}"
+                                                        id="option{{ forloop.counter }}" class="radio-template">
+                                                <label for="option{{ forloop.counter }}">
+                                                    <strong>{{ payment_option.name }}</strong>
+                                                    <br><span
+                                                        class="label-description">{{ payment_option.description }}</span></label>
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+                                </form>
+
+                                <div class="CTAs d-flex justify-content-between flex-column flex-lg-row">
+                                    <a href="checkout1.html" class="btn btn-template-outlined wide prev"><i
+                                            class="fa fa-angle-left"></i>Back to Address</a>
+                                    <button type="submit " form="paymentform" class="btn btn-template wide">Etape 2 <i
+                                            class="fa fa-angle-right"></i></button>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                {% order_summary %}
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}

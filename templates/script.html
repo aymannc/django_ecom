@@ -1,0 +1,43 @@
+{% load static %}
+<script src="{% static 'vendor/jquery/jquery.min.js ' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/jquery.cookie/jquery.cookie.js' %}"></script>
+<script src="{% static 'vendor/owl.carousel/owl.carousel.min.js' %}"></script>
+<script src="{% static 'vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'vendor/nouislider/nouislider.min.js' %}"></script>
+<script src="{% static 'vendor/jquery-countdown/jquery.countdown.min.js' %}"></script>
+<script src="{% static 'vendor/masonry-layout/masonry.pkgd.min.js' %}"></script>
+<script src="{% static 'vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+<script src="{% static 'js/front.js' %}"></script>
+<script>
+    window.onload = function () {
+        myFunction();
+        func();
+    };
+
+    function myFunction() {
+        try {
+            var x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(function () {
+                x.className = x.className.replace("show", "");
+            }, 3000);
+        } catch (err) {
+            console.log("snakar not aailale yet")
+        }
+
+
+    }
+
+    function func() {
+        try {
+            document.getElementById("id_email").className = "form-control";
+            document.getElementById("id_password1").className = "form-control";
+            document.getElementById("id_password2").className = "form-control";
+        } catch (err) {
+            console.log("not on sing up form yet")
+        }
+
+    }
+</script>

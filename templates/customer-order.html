@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% block content %}
+    <!-- Hero Section-->
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h2>Order reference : <span class="text-info">{{ order.ref_code }}</span></h2>
+                    <p class="lead">The order was placed on <span
+                            class="text-success">{{ order.ordered_date|date:"d/m/Y" }}</span>
+                        and is currently <span
+                                class="text-{{ order.get_tag_type }}">{{ order.get_order_status_display }}</span>.
+                    </p>
+                    <p class="text-muted">If you have any questions, please feel free to <a href="contact.html">contact
+                        us</a>, our customer service center is working for you 24/7.</p>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url "user-orders" %}">Orders</a></li>
+                        <li class="breadcrumb-item active">{{ order.ref_code }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="padding-small">
+        <div class="container">
+            <div class="row">
+                <!-- Customer Sidebar-->
+                {% show_profile_sidebar %}
+                <div class="col-lg-8 col-xl-9 pl-lg-3">
+                    <div class="basket basket-customer-order">
+                        <div class="basket-holder">
+                            <div class="basket-header">
+                                <div class="row">
+                                    <div class="col-5">Produit</div>
+                                    <div class="col-2">Prix</div>
+                                    <div class="col-2">QUANTITÉ</div>
+                                    <div class="col-2">Total</div>
+                                </div>
+                            </div>
+                            {% for order_item in order.items.all %}
+                                <div class="basket-body">
+                                    {% with order_item.product as product %}
+                                        <!-- Product-->
+                                        <div class="item">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-5">
+                                                    <div class="d-flex align-items-center">
+                                                        {% with product.get_primary_image as image %}
+                                                            <img src="{{ image.get_absolute_url }}"
+                                                                 alt="{{ image.alt }}" class="img-fluid">
+                                                        {% endwith %}
+                                                        <div class="title">
+                                                            <a href="{{ product.get_absolute_url }}">
+                                                                <h5>{{ product.product_name }}</h5>
+                                                                {% for option in order_item.additional_options.all %}
+                                                                    <span class="text-muted">{{ option.value }} [+ {{ option.price }}DH ]</span>
+                                                                    <br>
+                                                                {% endfor %}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2"><span>{{ order_item.get_total_price }}</span></div>
+                                                <div class="col-2">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="quantity d-flex align-items-center">
+                                                            <input type="text" value="{{ order_item.quantity }}"
+                                                                   class="quantity-no">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2"><span>{{ order_item.get_subtotal }}</span></div>
+                                                <div class="col-1 text-center"><a
+                                                        href="{{ order_item.remove_form_cart }}"><i
+                                                        class="delete fa fa-trash text-danger"></i><a></div>
+                                            </div>
+                                        </div>
+                                    {% endwith %}
+                                </div>
+                            {% endfor %}
+                            <div class="basket-footer">
+                                <div class="item">
+                                    <div class="row">
+                                        <div class="offset-md-6 col-4"><strong>Sous total</strong></div>
+                                        <div class="col-2 text-right text-primary">
+                                            <strong>{{ order.get_total }}DH</strong></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="row">
+                                        <div class="offset-md-6 col-4"><strong>Livraison</strong></div>
+                                        <div class="col-2 text-right"><strong>{{ order.shipping_price }}DH</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="row">
+                                        <div class="offset-md-6 col-4"><strong>Code Promo</strong></div>
+                                        <div class="col-2 text-right text-success"><strong>-{% if order.coupon %}
+                                            {{ order.coupon.amount }}{% else %}0{% endif %}DH</strong></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="row">
+                                        <div class="offset-md-6 col-4"><strong>Total</strong></div>
+                                        <div class="col-2 text-right"><strong>{{ order.get_total_coupon }}DH</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row addresses">
+                        {% if order.billing_address %}
+
+                            <div class="col-sm-6">
+                                <div class="block-header">
+                                    <h6 class="text-uppercase">Adresse de facturation</h6>
+                                </div>
+                                <div class="block-body">
+                                    <p>{{ order.billing_address.full_name }}<br>
+                                        {{ order.billing_address.phone_number }}<br>
+                                        {{ order.billing_address.street_address }} {{ order.billing_address.apartment_address }}<br>
+                                        {{ order.billing_address.city }}, {{ order.billing_address.state }}<br>
+                                        {{ order.billing_address.zip }}, {{ order.billing_address.country }}<br>
+
+                                    </p>
+                                </div>
+                            </div>
+
+                        {% endif %}
+
+                        {% if order.shipping_address %}
+
+                            <div class="col-sm-6">
+                                <div class="block-header">
+                                    <h6 class="text-uppercase">Adresse de livraison</h6>
+                                </div>
+                                <div class="block-body">
+                                    <p>{{ order.shipping_address.full_name }}<br>
+                                        {{ order.shipping_address.phone_number }}<br>
+                                        {{ order.shipping_address.street_address }} {{ order.shipping_address.apartment_address }}<br>
+                                        {{ order.shipping_address.city }}, {{ order.shipping_address.state }}<br>
+                                        {{ order.shipping_address.zip }}, {{ order.shipping_address.country }}<br>
+
+                                    </p>
+                                </div>
+                            </div>
+
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+    </section>
+    <!-- Footer-->
+{% endblock content %}

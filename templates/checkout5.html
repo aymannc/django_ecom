@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h1>Order confirmed</h1>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+                        <li class="breadcrumb-item active">Order confirmed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Checout Forms-->
+    <section class="checkout">
+        <div class="container">
+            <div class="confirmation-icon"><i class="fa fa-check"></i></div>
+            <h2>Votre commande est confirmée.</h2>
+            <p class="mb-5">Un e-mail vous a été envoyé à l'adresse {{ user.email }}</p>
+            <p><a href="{% url "user-orders" %}" class="btn btn-template wide">Voir ou gérer votre commande</a></p>
+        </div>
+    </section>
+{% endblock content %}

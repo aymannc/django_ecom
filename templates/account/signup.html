@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h1>{% trans "Sign Up" %}</h1>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+                        <li class="breadcrumb-item active">Sign Up</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="padding-small">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-warning">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>
+                        .{% endblocktrans %}</p>
+
+                    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group ">
+                                {#                                <label for="email" class="form-label">{{ field.label }}</label>#}
+                                {{ field|as_crispy_field }}
+                            </div>
+                        {% endfor %}
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                        {% endif %}
+
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary"><i class="icon-profile"></i> Sign up</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

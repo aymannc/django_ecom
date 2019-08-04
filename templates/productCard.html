@@ -1,0 +1,38 @@
+<div class="card ">
+    <a href={{ product.get_absolute_url }}>
+        {% with product.get_primary_image as image %}
+            <img class="card-img mx-auto" style="display:block;width: 150px;" src="{{ image.get_absolute_url }}"
+                 alt="{{ image.alt }}">
+        {% endwith %}
+    </a>
+    <div class="card-body" style=" padding-top: 0px; padding-bottom: 10px;padding-right:5px">
+        <h5 class="card-title">{{ product.product_name }}</h5>
+        <p class=" mb-0" style="height: 80px;overflow:auto;">
+            <small>{{ product.product_into }}</small>
+        </p>
+        <div class="row my-2 ">
+            <h4 class="mx-auto text-info">
+                <small>
+                    {% if product.product_price_onsale %}
+                        {{ product.product_price_onsale }} DH
+                    {% else %}
+                        {{ product.product_price }} DH
+                    {% endif %}
+                </small>
+            </h4>
+
+            {% if product.product_price_onsale %}
+                <h5 class="mx-auto pr-2 text-secondary">
+                    <small><strike>{{ product.product_price }} </strike>DH</small>
+                </h5>
+            {% endif %}
+        </div>
+        <div class="row d-flex mx-auto">
+            <div class="col-6"><a href="{{ product.get_add_to_cart_url }}" class="btn btn-primary"><i
+                    class="fa fa-shopping-cart"></i></a></div>
+            <div class="col-6"><a href="{{ product.get_add_to_favorites_url }}" class="btn btn-danger"><i
+                    class="fa fa-heart"></i></a></div>
+        </div>
+
+    </div>
+</div>

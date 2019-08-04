@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block content %}
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px;
+            {% if order %}{% else %}height: 540px;{% endif %}">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h1>Panier</h1>
+                    <p class="lead text-muted">Vous avez actuellement {{ order_count }} articles dans votre panier</p>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item active">Shopping cart</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% if order %}
+        <!-- Shopping Cart Section-->
+        <section class="shopping-cart">
+            <div class="container">
+                <div class="basket">
+                    <div class="basket-holder">
+                        <div class="basket-header">
+                            <div class="row">
+                                <div class="col-5">Produit</div>
+                                <div class="col-2">Prix</div>
+                                <div class="col-2">QUANTITÉ</div>
+                                <div class="col-2">Total</div>
+                                <div class="col-1 text-center">Retirer</div>
+                            </div>
+                        </div>
+                        {% for order_item in order.items.all %}
+                            <div class="basket-body">
+                                {% with order_item.product as product %}
+                                    <!-- Product-->
+                                    <div class="item">
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-5">
+                                                <div class="d-flex align-items-center">
+                                                    {% with product.get_primary_image as image %}
+                                                        <img src="{{ image.get_absolute_url }}" alt="{{ image.alt }}"
+                                                             class="img-fluid">
+                                                    {% endwith %}
+                                                    <div class="title">
+                                                        <a href="{{ product.get_absolute_url }}">
+                                                            <h5>{{ product.product_name }}</h5>
+                                                            {% for option in order_item.additional_options.all %}
+                                                                <span class="text-muted">{{ option.value }} [+ {{ option.price }}DH ]</span>
+                                                                <br>
+                                                            {% endfor %}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2"><span>{{ order_item.get_total_price }}</span></div>
+                                            <div class="col-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="quantity d-flex align-items-center">
+                                                        <a href="{{ order_item.decrement_item_card }}">
+                                                            <div class="dec-btn">-</div>
+                                                        </a>
+                                                        <input type="text" value="{{ order_item.quantity }}"
+                                                               class="quantity-no">
+                                                        <a href="{{ order_item.increment_item_card }}">
+                                                            <div class="inc-btn">+</div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2"><span>{{ order_item.get_subtotal }}</span></div>
+                                            <div class="col-1 text-center"><a
+                                                    href="{{ order_item.remove_form_cart }}"><i
+                                                    class="delete fa fa-trash text-danger"></i><a></div>
+                                        </div>
+                                    </div>
+                                {% endwith %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="CTAs d-flex align-items-center justify-content-center justify-content-md-end flex-column flex-md-row">
+                    <a href="{% url 'shop' %}" class="btn btn-template-outlined wide">Continuer mes achats</a><a
+                        href="#" class="btn btn-template wide">Mise à jour panier</a></div>
+            </div>
+        </section>
+        <!-- Order Details Section-->
+        <section class="order-details no-padding-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="block">
+                            <div class="block-header">
+                                <h6 class="text-uppercase">Vous avez un code promo ?</h6>
+                            </div>
+                            <div class="block-body">
+                                <p>Si vous avez un code de réduction, veuillez le saisir dans la case ci-dessous.</p>
+                                <form method="post">
+                                    <div class="form-group d-flex">
+                                        {% comment %} <input type="text" name="coupon"> {% endcomment %}
+                                        {% csrf_token %}
+                                        {{ coupon }}
+                                        <button type="submit" class="cart-black-button">Ajouter</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="block">
+                            <div class="block-header">
+                                <h6 class="text-uppercase">Message</h6>
+                            </div>
+                            <div class="block-body">
+                                <p>Si vous voulez nous laisser un message à propos de votre commande, merci de bien
+                                    vouloir le renseigner dans le champ ci-dessous :</p>
+                                <form method="POST" id="message-form">
+                                    {% csrf_token %}
+                                    {{ message.as_p }}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="block">
+                            <div class="block-header">
+                                <h6 class="text-uppercase">votre commande</h6>
+                            </div>
+                            <div class="block-body">
+                                <ul class="order-menu list-unstyled">
+                                    <li class="d-flex justify-content-between">
+                                        <span>Sous total</span><strong>{{ order.get_total }}DH</strong></li>
+                                    <li class="d-flex justify-content-between"><span>Code Promo</span><strong>-
+                                        {% if order.coupon %}{{ order.coupon.amount }}{% else %}0{% endif %}DH</strong>
+                                    </li>
+                                    <li class="d-flex justify-content-between"><span>Total</span><strong
+                                            class="text-primary price-total">{{ order.get_total_coupon }}DH</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 text-center CTAs">
+                        <button type="submit" form="message-form" class="btn btn-template btn-lg wide">Commander<i
+                                class="fa fa-long-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    {% endif %}
+
+{% endblock content %}

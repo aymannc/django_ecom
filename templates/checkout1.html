@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% block content %}
+
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h1>Checkout</h1>
+                    <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item active">Checkout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Checkout Forms-->
+    <section class="checkout">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item"><a href="checkout1.html" class="nav-link active">Address</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link disabled">Delivery Method </a></li>
+                        <li class="nav-item"><a href="#" class="nav-link disabled">Payment Method </a></li>
+                        <li class="nav-item"><a href="#" class="nav-link disabled">Order Review</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="address" class="active tab-block">
+                            <form method="post" id="form-address">
+                                <!-- Invoice Address-->
+                                <div class="block-header mb-5">
+                                    <h6>Invoice address </h6>
+                                </div>
+                                <div class="row">
+                                    {% if form.errors %}
+                                        {% for field in form %}
+                                            {% for error in field.errors %}
+                                                <div class="alert alert-warning">
+                                                    <strong>{{ field.label }}:{{ error|escape }}</strong>
+                                                </div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        {% for error in form.non_field_errors %}
+                                            <div class="alert alert-danger">
+                                                <strong>{{ field.label }} : {{ error|escape }}</strong>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% csrf_token %}
+                                    {% for field in form %}
+                                        <div class="form-group col-md-6">
+                                            <label for="firstname" class="form-label">{{ field.label }}</label>
+                                            {{ field }}
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+
+                                <div class="CTAs d-flex justify-content-between flex-column flex-lg-row">
+                                    <a href="{% url "cart" %}" class="btn btn-template-outlined wide prev">
+                                        <i class="fa fa-angle-left"></i>Back to basket</a>
+                                    <button type="submit" form="form-address" class="btn btn-template btn-lg wide">
+                                        Suivant<i class="fa fa-long-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% order_summary %}
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}

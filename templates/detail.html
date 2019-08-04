@@ -1,0 +1,199 @@
+{% extends 'base.html' %}{% load mytags %}{% block content %}
+    <!-- Hero Section-->
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h2 class="text-primary">{{ product.product_name }}</h2>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a
+                                href="{{ product.product_categorie.get_absolute_url }}">{{ product.product_categorie }}</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{ product.product_name }}</li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="product-details">
+        <div class="container">
+            <div class="row">
+                <div class="product-images col-lg-6">
+                    {% for tag in product.tags.all %}
+                        <div class="ribbon-{{ tag.get_type_display }} text-uppercase">{{ tag.tag }}</div>
+                    {% endfor %}
+                    <div data-slider-id="1" class="owl-carousel items-slider owl-drag" style=" padding: 0px">
+                        {% for image in product.product_images.all %}
+                            <div class="item"><img src="{{ image.get_absolute_url }}" alt="{{ image.alt }}"></div>
+                        {% endfor %}
+                    </div>
+                    <div data-slider-id="1" class="owl-thumbs">
+                        {% for image in product.product_images.all %}
+                            <div class="owl-thumb-item active"><img src="{{ image.get_absolute_url }}" width="100px"
+                                                                    alt="{{ image.alt }}"></div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                <div class="details col-lg-6">
+                    <div class="d-flex align-items-center justify-content-between flex-column flex-sm-row">
+                        <ul class="price list-inline no-margin">
+                            {% if product.product_price_onsale %}
+                                <li class="list-inline-item current">{{ product.product_price_onsale }} DH</li>
+                                <li class="list-inline-item original small">{{ product.product_price }} DH</li>
+                            {% else %}
+                                <li class="list-inline-item current">{{ product.product_price }} DH</li>
+                            {% endif %}
+                        </ul>
+                        {% if product.product_price_onsale %}
+                            <div class="review d-flex  mt-2">
+                                <h6 class="text-success">Économisez
+                                    : {{ product.product_price|sub:product.product_price_onsale }} DH</h6>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="my-5">
+                        <ul>
+                            {% for attribute in product.product_attributes.all %}
+                                <li class="my-2">{{ attribute.option.option_name }} :
+                                    <strong>{{ attribute.option_value.value }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <ul>
+                        {% for option in product.additional_options.all %}
+                            <div class="row my-2">
+                                <div class="col mt-2"><strong> {{ option.option_name }} </strong></div>
+                                <div class="col my-2">
+                                    <select id="product-size" class="bs-select mx-5">
+                                        {% for option_value in option.option_values.all %}
+                                            <option value="{{ option_value.value }}">{{ option_value.value }}
+                                                (+ {{ option_value.price }} DH )
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                    <form action="{% url 'add-to-cart' slug=product.slug %}">
+                        <div class="row justify-content-center">
+                            <h6 class="col ml-5">Quantity : </h6>
+                            <div class="col quantity d-flex ">
+                                <div class="dec-btn">-</div>
+                                <input type="text" value="
+                                        {% if request.GET.quantity %}{{ request.GET.quantity }}{% else %}1{% endif %}"
+                                       class="quantity-no" name="quantity">
+                                <div class="inc-btn">+</div>
+                            </div>
+                        </div>
+                        <ul class="CTAs list-inline">
+                            <li class="list-inline-item my-2">
+                                <button class="btn btn-template wide"><i class="icon-cart"></i>Add to Cart</button>
+                            </li>
+                            <li class="list-inline-item my-2"><a href="{% url 'add-to-favorite' slug=product.slug %}"
+                                                                 class="btn btn-template-outlined wide"
+                                                                 style=" margin-bottom: 0px;"> <i
+                                    class="fa fa-heart-o"></i>Add to wishlist</a></li>
+                        </ul>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="product-description no-padding">
+        <div class="container">
+            <ul role="tablist" class="nav nav-tabs flex-column flex-sm-row">
+                <li class="nav-item"><a data-toggle="tab" href="#description" role="tab" class="nav-link active">Description</a>
+                </li>
+                <li class="nav-item"><a data-toggle="tab" href="#additional-information" role="tab" class="nav-link">Fiche
+                    Technique</a></li>
+                {% comment %} <li class="nav-item"><a data-toggle="tab" href="#reviews" role="tab" class="nav-link">Reviews</a></li> {% endcomment %}
+            </ul>
+            <div class="tab-content">
+                <div id="description" role="tabpanel" class="tab-pane active">
+                    <p>
+                        {{ product.product_description }}
+                    </p>
+                </div>
+                <div id="additional-information" role="tabpanel" class="tab-pane">
+                    <table class="table">
+                        <tbody>
+                        {% for attribute in product.product_attributes.all %}
+                            <tr>
+                                <th class="border-0">{{ attribute.option.option_name }} :</th>
+                                <td class="border-0">{{ attribute.option_value.value }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="share-product gray-bg d-flex align-items-center justify-content-center flex-column flex-md-row">
+                <strong class="text-uppercase">Share this on</strong>
+                <ul class="list-inline text-center">
+                    <li class="list-inline-item"><a
+                            href="https://twitter.com/home?status={{ share_string }}%20{{ request.build_absolute_uri }}"
+                            target="_blank" title="twitter"><i class="fa fa-twitter"></i></a></li>
+                    <li class="list-inline-item"><a
+                            href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+                            target="_blank" title="facebook"><i class="fa fa-facebook"></i></a></li>
+                    <li class="list-inline-item"><a
+                            href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ share_string }}&source={{ request.get_host }}"
+                            target="_blank" title="linkedin"><i class="fa fa-linkedin"></i></a></li>
+                    <li class="list-inline-item"><a
+                            href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}&title={{ share_string }}"
+                            target="_blank" title="Reddit"><i class="fa fa-reddit"></i></a></li>
+                    <li class="list-inline-item"><a
+                            href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}&title={{ share_string }}"
+                            target="_blank" title="Reddit"><i class="fa fa-whatsapp"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    {% with product.related_products.all as related_products %}
+        {% if related_products %}
+            <section class="related-products" style="padding-bottom: 10px;padding-top: 40px;">
+                <div class="container">
+                    <header class="text-center" style="margin-bottom: 40px;">
+                        <h2>Produits fréquemment achetés ensemble</h2>
+                    </header>
+                    <div class="row">
+                        {% for p in related_products %}
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-8 mx-auto my-2">
+                                {% include "productCard.html" with  product=p %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    {% endwith %}
+
+    <section class="related-products" style="padding:30px 0px">
+        <div class="container">
+            <header class="text-center" style="margin-bottom: 40px;">
+                <h2>
+                    <small>Tu pourrais aussi aimer</small>
+                    AUTRES PRODUITS DANS LA MÊME CATÉGORIE
+                </h2>
+            </header>
+            <div class="row">
+                {% for p in product.product_categorie.products.all %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-8 mx-auto my-2">
+                        {% include "productCard.html" with  product=p %}
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </section>
+
+{% endblock content %}

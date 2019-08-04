@@ -1,0 +1,98 @@
+{% load static %}
+{% load mytags %}
+<header class="header">
+    <!-- Tob Bar-->
+    <div class="top-bar">
+        <div class="container-fluid">
+            <div class="row d-flex align-items-center">
+                <div class="col-lg-6 d-flex justify-content-start">
+                    <ul class="list-inline">
+                        <li class="list-inline-item"><i class="icon-telephone"></i>+212-528-213-045</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 d-flex justify-content-end">
+                    <li class="list-inline-item">Livraison gratuite pour toutes les commandes de 20000DH et plus</li>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg">
+        <div class="search-area">
+            <div class="search-area-inner d-flex align-items-center justify-content-center">
+                <div class="close-btn"><i class="icon-close"></i></div>
+                <form action="#">
+                    <div class="form-group">
+                        <input type="search" name="search" id="search" placeholder="Que cherchez-vous?">
+                        <button type="submit" class="submit"><i class="icon-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <!-- Navbar Header  --><a href="{% url 'home' %}" class="navbar-brand"><img
+                src="{% static 'img/foxlogo.png' %}" alt="..."></a>
+            <button type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+                    aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right"><i
+                    class="fa fa-bars"></i></button>
+            <!-- Navbar Collapse -->
+            <div id="navbarCollapse" class="collapse navbar-collapse">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">Accueil</a>
+
+                    </li>
+                    <!-- Megamenu-->
+                    <li class="nav-item dropdown menu-large"><a href="#" data-toggle="dropdown" class="nav-link">Catégories<i
+                            class="fa fa-angle-down"></i></a>
+                        <div class="dropdown-menu megamenu">
+                            <div class="row mx-auto">
+                                {% show_all_categories %}
+                            </div>
+                    </li>
+                    <!-- /Megamenu end-->
+                    <!-- Multi level dropdown    -->
+                    <li class="nav-item dropdown"><a id="navbarDropdownMenuLink" href="http://example.com/"
+                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                                     class="nav-link">Nos produits<i class="fa fa-angle-down"></i></a>
+                        <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
+                            <li><a href="#" class="dropdown-item">Promotions</a></li>
+                            <li><a href="#" class="dropdown-item">Nouveautés</a></li>
+                            <li><a href="#" class="dropdown-item">Meilleures ventes</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown"><a id="navbarDropdownMenuLink" href="http://example.com/"
+                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                                     class="nav-link">A propos<i class="fa fa-angle-down"></i></a>
+                        <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
+                            <li><a href="#" class="dropdown-item">Qui sommes-nous</a></li>
+                            <li><a href="#" class="dropdown-item">Livraisons et retours</a></li>
+                            <li><a href="#" class="dropdown-item">Garantie satisfaction</a></li>
+                            <li><a href="#" class="dropdown-item">Paiement sécurisé</a></li>
+                        </ul>
+                    </li>
+                    <!-- Multi level dropdown end-->
+                    <li class="nav-item"><a href="{% url 'blog' %}" class="nav-link">Blog </a>
+                    </li>
+                    <li class="nav-item"><a href="{% url 'contact' %}" class="nav-link">Contact</a>
+                    </li>
+                </ul>
+                <div class="right-col d-flex align-items-lg-center flex-column flex-lg-row">
+                    <!-- Search Button-->
+                    <div class="search"><i class="icon-search"></i></div>
+                    <!-- User Not Logged - link to login page-->
+                    <div class="user"><a id="userdetails" href="{% url 'user-profile' %}" class="user-link"><i
+                            class="icon-profile"> </i></a></div>
+                    <!-- Cart Dropdown-->
+                    <div class="cart dropdown show"><a id="cartdetails" data-toggle="dropdown" aria-haspopup="true"
+                                                       aria-expanded="false" class="dropdown-toggle"><i
+                            class="icon-cart"></i>
+                        <div class="cart-no">{% cart_count %}</div>
+                    </a><a href="{% url 'cart' %}" class="text-primary view-cart">View Cart</a>
+                        <div aria-labelledby="cartdetails" class="dropdown-menu">
+                            {% show_cart_products %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,30 @@
+{% load static %}
+<div class="dropdown-item cart-product">
+    {% if count %}
+        {% for item in order.items.all %}
+            <div class="d-flex align-items-center mb-3">
+                <div class="img" style="padding:0px">
+                    {% with item.product.get_primary_image as image %}
+                        <img src="{{ image.get_absolute_url }}" alt="{{ image.alt }}" class="img-fluid"></div>
+                    {% endwith %}
+                <div class="details d-flex justify-content-between">
+                    <div class="text"><a
+                            href="{{ item.product.get_absolute_url }}"><strong>{{ item.product.product_name }}</strong></a><span>Quantity: {{ item.quantity }}</span><span
+                            class="price text-info">{{ item.get_subtotal }} DH</span></div>
+                    <a href="{{ item.remove_form_cart }}"><i class="fa fa-trash-o text-danger"></i></a>
+                </div>
+            </div>
+        {% endfor %}
+
+        </div>
+        <!-- total price-->
+        <div class="dropdown-item total-price d-flex justify-content-between"><span>Total</span><strong
+                class="text-primary">{{ order.get_total_coupon }}DH</strong></div>
+        <!-- call to actions-->
+        <div class="dropdown-item CTA d-flex">
+            <a href="{% url 'cart' %}" class="btn btn-template wide">View Cart</a>
+            <a href="{% url 'checkout' %}" class="btn btn-template wide">Checkout</a>
+        </div>
+    {% else %}
+        <p>Cart Is Empty</p>
+    {% endif %}

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% block content %}
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h1>Checkout</h1>
+                    <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+                        <li class="breadcrumb-item active">Checkout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Checout Forms-->
+    <section class="checkout">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item"><a href="{% url "checkout" %" class="nav-link">Address</a></li>
+                    <li class=" nav-item"><a href="{% url "delivery" %}" class="nav-link">Delivery Method </a></li>
+                        <li class="nav-item"><a href="{% url "payment" %}" class="nav-link">Payment Method </a></li>
+                        <li class="nav-item"><a href="{% url "overview" %}" class="nav-link active">Order Review</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="order-review" class="tab-block">
+                            <div class="cart">
+                                <div class="cart-holder">
+                                    <div class="basket-header">
+                                        <div class="row">
+                                            <div class="col-6">Product</div>
+                                            <div class="col-2">Price</div>
+                                            <div class="col-2">Quantity</div>
+                                            <div class="col-2">Unit Price</div>
+                                        </div>
+                                    </div>
+                                    {% for order_item in order.items.all %}
+                                        <div class="basket-body">
+                                            {% with order_item.product as product %}
+                                                <!-- Product-->
+                                                <div class="item">
+                                                    <div class="row d-flex align-items-center">
+                                                        <div class="col-5">
+                                                            <div class="d-flex align-items-center">
+                                                                {% with product.get_primary_image as image %}
+                                                                    <img src="{{ image.get_absolute_url }}"
+                                                                         alt="{{ image.alt }}" class="img-fluid">
+                                                                {% endwith %}
+                                                                <div class="title">
+                                                                    <a href="{{ product.get_absolute_url }}">
+                                                                        <h5>{{ product.product_name }}</h5>
+                                                                        {% for option in order_item.additional_options.all %}
+                                                                            <span class="text-muted">{{ option.value }} [+ {{ option.price }}DH ]</span>
+                                                                            <br>
+                                                                        {% endfor %}
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2"><span>{{ order_item.get_total_price }}</span>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="quantity d-flex align-items-center">
+                                                                    <input type="text" value="{{ order_item.quantity }}"
+                                                                           class="quantity-no">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2"><span>{{ order_item.get_subtotal }}</span>
+                                                        </div>
+                                                        <div class="col-1 text-center"><a
+                                                                href="{{ order_item.remove_form_cart }}"><i
+                                                                class="delete fa fa-trash text-danger"></i><a></div>
+                                                    </div>
+                                                </div>
+                                            {% endwith %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-sm-6 mb-3">
+                                    <div class="block-header mb-2">
+                                        <h6 class="text-uppercase">Adresse de livraison</h6>
+                                    </div>
+                                    <div class="block-body text-center">
+                                        <p>{{ order.billing_address.full_name }}<br>
+                                            {{ order.billing_address.phone_number }}<br>
+                                            {{ order.billing_address.street_address }} {{ order.billing_address.apartment_address }}<br>
+                                            {{ order.billing_address.city }}, {{ order.billing_address.state }}<br>
+                                            {{ order.billing_address.zip }}, {{ order.billing_address.country }}<br>
+
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="block-header mb-3">
+                                        <h6 class="text-uppercase">Mode de livraison </h6>
+                                    </div>
+                                    <div class="block-body text-center">
+                                        <p> {% if order.delivery_method.icon %}
+                                            <img src="{{ order.delivery_method.icon.get_absolute_url }}"
+                                                 alt="{{ order.delivery_method.icon.alt }}" sizes="50px"><br>
+                                        {% endif %}
+                                            {{ order.delivery_method.name }}<br>
+                                            {{ order.delivery_method.description }}<br>
+                                            {{ order.delivery_method.shipping_price }} DH<br>
+
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="block-header mb-3">
+                                        <h6 class="text-uppercase">Paiement</h6>
+                                    </div>
+                                    <div class="block-body text-center">
+                                        <p><strong class="text-primary"> modalité de
+                                            paiement: </strong><br>{{ order.payment_option.name }}<br>
+                                            {{ order.payment_option.description }}<br>
+                                            <strong class="text-primary">méthode de paiement:</strong><br>
+                                            {{ order.payment_method.description }}<br>
+
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="CTAs d-flex justify-content-between flex-column flex-lg-row m-4">
+                                <label>
+                                    <input type="checkbox" class="custom-control-input" value="1"
+                                           required="">
+                                    <span></span>
+                                    <span> <strong> --> </strong> En cliquant sur "Commande", vous confirmez que vous avez lu et accepte les <a
+                                            href="{% url "conditions_vente" %}"
+                                            class="text-primary">conditions générales de vente</a> et <a
+                                            href="{% url "conditions_annulation" %}" class="text-primary">
+                                                les conditions d'annulation</a></span>
+
+                                </label>
+                            </div>
+                            <div class="CTAs d-flex justify-content-between flex-column flex-lg-row"><a
+                                    href="checkout3.html" class="btn btn-template-outlined wide prev"><i
+                                    class="fa fa-angle-left"></i>Back to payment method</a>
+                                <a href="{% url "confirmation" %}" class="btn btn-template wide next">Commande<i
+                                        class="fa fa-angle-right"></i></a></div>
+                        </div>
+                    </div>
+                </div>
+                {% order_summary %}
+            </div>
+        </div>
+    </section>
+{% endblock content %}

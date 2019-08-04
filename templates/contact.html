@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h1>Contact</h1>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active">Contact</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <main class="contact-page">
+        <!-- Contact page-->
+        <section class="contact">
+            <div class="container">
+                <header>
+                    <p class="lead">
+                        Are you curious about something? Do you have some kind of problem with our products? As am
+                        hastily invited settled at limited civilly fortune me. Really spring in extent an by. Judge but
+                        built party world. Of so am
+                        he remember although required. Bachelor unpacked be advanced at. Confined in declared marianne
+                        is vicinity.
+                    </p>
+                </header>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="contact-icon">
+                            <div class="icon icon-street-map"></div>
+                        </div>
+                        <h3>Address</h3>
+                        <p>13/25 New Avenue<br>New Heaven, 45Y 73J<br>England, <strong>Great Britain</strong></p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="contact-icon">
+                            <div class="icon icon-support"></div>
+                        </div>
+                        <h3>Call center</h3>
+                        <p><strong>+212-528-213-045</strong></p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="contact-icon">
+                            <div class="icon icon-envelope"></div>
+                        </div>
+                        <h3>Electronic support</h3>
+                        <ul class="list-style-none">
+                            <li><strong><a href="mailto:ayman.nait21@gmail.com">ayman.nait21@gmail.com</a></strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="container">
+            <div class="row ">
+                <div class="col-8 col-sm-10 mx-auto text-center">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13763.742398083275!2d-9.584122!3d30.409569!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x8f2ddbb3c37d4da6!2sVala+Bleu!5e0!3m2!1sen!2sma!4v1564930719581!5m2!1sen!2sma"
+                            width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        <div>
+        </div>
+        <section>
+            <div class="container">
+                <header class="mb-5 text-center">
+                    <h2 class="heading-line ">Contact form</h2>
+                </header>
+                <div class="row">
+                    <div class="col-md-7 mx-auto">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% if form.errors %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-warning">
+                                            <strong>{{ field.label }}:{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ field.label }} : {{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="controls">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="name" class="form-label">Your firstname *</label>
+                                            {{ form.firstname }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="surname" class="form-label">Your lastname *</label>
+                                            {{ form.lastname }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Your email *</label>
+                                    {{ form.email }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="message" class="form-label">Your message for us *</label>
+                                    {{ form.message }}
+                                </div>
+                                <button type="submit" class="btn btn-template">Send message</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

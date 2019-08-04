@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+{% include "head.html" %}
+<body>
+{% include "header.html" %}
+{% block content %}
+    Stuff goes here
+{% endblock content %}
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            <div id="snackbar" style="background-color: #28a745;">{{ message }}</div>
+        {% elif message.tags == 'info' %}
+            <div id="snackbar" style="background-color: #42a5f5;">{{ message }}</div>
+        {% elif message.tags == 'warning' %}
+            <div id="snackbar" style="background-color: #ffc107;">{{ message }}</div>
+        {% elif message.tags == 'error' %}
+            <div id="snackbar" style="background-color: #dc3545;">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% include "footer.html" %}
+
+</body>
+</html>
