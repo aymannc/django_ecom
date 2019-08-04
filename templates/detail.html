@@ -86,8 +86,7 @@
                             <h6 class="col ml-5">Quantity : </h6>
                             <div class="col quantity d-flex ">
                                 <div class="dec-btn">-</div>
-                                <input type="text" value="
-                                        {% if request.GET.quantity %}{{ request.GET.quantity }}{% else %}1{% endif %}"
+                                <input type="text" value="{% if request.GET.quantity %}{{ request.GET.quantity }}{% else %}1{% endif %}"
                                        class="quantity-no" name="quantity">
                                 <div class="inc-btn">+</div>
                             </div>

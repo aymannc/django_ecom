@@ -4,6 +4,7 @@ from urllib.parse import quote_plus
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
@@ -38,12 +39,10 @@ def product_details(req, slug):
 
 
 def shop(req):
-    category_count = get_category_count()
-    most_recent = Post.objects.order_by('-timestamp')[:3]
-    post_list = Post.objects.all()
-    paginator = Paginator(post_list, 4)
+    product_list = Product.objects.all().order_by('-last_modified')
+    paginator = Paginator(product_list, 9)
     page_request_var = 'page'
-    page = request.GET.get(page_request_var)
+    page = req.GET.get(page_request_var)
     try:
         paginated_queryset = paginator.page(page)
     except PageNotAnInteger:
@@ -53,12 +52,12 @@ def shop(req):
 
     context = {
         'queryset': paginated_queryset,
-        'most_recent': most_recent,
+        'count': paginator.count,
+        'start': paginated_queryset.start_index,
+        'end': paginated_queryset.end_index,
         'page_request_var': page_request_var,
-        'category_count': category_count,
-        'form': form
     }
-    return render(req, 'blog.html', context)
+    return render(req, 'shop.html', context)
 
 
 def shop_by_category(req, slug):
