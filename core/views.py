@@ -38,11 +38,27 @@ def product_details(req, slug):
 
 
 def shop(req):
-    category = Category.objects.all()
+    category_count = get_category_count()
+    most_recent = Post.objects.order_by('-timestamp')[:3]
+    post_list = Post.objects.all()
+    paginator = Paginator(post_list, 4)
+    page_request_var = 'page'
+    page = request.GET.get(page_request_var)
+    try:
+        paginated_queryset = paginator.page(page)
+    except PageNotAnInteger:
+        paginated_queryset = paginator.page(1)
+    except EmptyPage:
+        paginated_queryset = paginator.page(paginator.num_pages)
+
     context = {
-        "category": category,
+        'queryset': paginated_queryset,
+        'most_recent': most_recent,
+        'page_request_var': page_request_var,
+        'category_count': category_count,
+        'form': form
     }
-    return render(req, "shop.html", context)
+    return render(req, 'blog.html', context)
 
 
 def shop_by_category(req, slug):
