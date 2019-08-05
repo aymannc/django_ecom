@@ -1,7 +1,7 @@
 import random
 import string
 from urllib.parse import quote_plus
-
+from django.db.models import FieldDoesNotExist
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -39,8 +39,27 @@ def product_details(req, slug):
 
 
 def shop(req):
-    categories=Category.objects.filter(parent_category=None)
-    product_list = Product.objects.all().order_by('-last_modified')
+    categories = Category.objects.filter(parent_category=None)
+    valid = False
+    value = None
+    if req.POST.get("order"):
+        value = req.POST["order"]
+        try:
+            Product._meta.get_field(value)
+            valid = True
+        except FieldDoesNotExist:
+            try:
+                Product._meta.get_field(value[1:])
+                valid = True
+            except FieldDoesNotExist:
+                messages.error(req, "Non valid selector")
+    selected = ""
+    if valid:
+        product_list = Product.objects.all().order_by(value)
+        selected = value
+    else:
+        product_list = Product.objects.all().order_by("-date_added")
+        selected = "-date_added"
     paginator = Paginator(product_list, 9)
     page_request_var = 'page'
     page = req.GET.get(page_request_var)
@@ -53,6 +72,7 @@ def shop(req):
 
     context = {
         'categories': categories,
+        'selected': selected,
         'queryset': paginated_queryset,
         'count': paginator.count,
         'start': paginated_queryset.start_index,
