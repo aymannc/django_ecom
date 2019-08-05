@@ -39,6 +39,7 @@ def product_details(req, slug):
 
 
 def shop(req):
+    categories=Category.objects.filter(parent_category=None)
     product_list = Product.objects.all().order_by('-last_modified')
     paginator = Paginator(product_list, 9)
     page_request_var = 'page'
@@ -51,6 +52,7 @@ def shop(req):
         paginated_queryset = paginator.page(paginator.num_pages)
 
     context = {
+        'categories': categories,
         'queryset': paginated_queryset,
         'count': paginator.count,
         'start': paginated_queryset.start_index,

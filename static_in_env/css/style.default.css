@@ -2692,7 +2692,7 @@ section.product-description .review-text {
 }
 
 .sidebar .block > ul > li > a:hover {
-    background: #222;
+    background: #fff;
     color: #fff
 }
 
@@ -2720,6 +2720,7 @@ section.product-description .review-text {
     -webkit-transition: all 0.3s;
     transition: all 0.3s
 }
+
 
 .sidebar ul ul {
     margin-left: 20px

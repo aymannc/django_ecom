@@ -23,14 +23,19 @@
                     <div class="block">
                         <h6 class="text-uppercase">Product Categories</h6>
                         <ul class="list-unstyled">
-                            <li class="active"><a href="#"
-                                                  class="d-flex justify-content-between align-items-center"><span>Men's Collection</span>
-                                <small>200</small>
-                            </a>
-                                <ul class="list-unstyled">
-                                    <li><a href="#">T-shirts</a></li>
-                                </ul>
-                            </li>
+                            {% for category in categories %}
+                                <li ><a href="{{ category.get_absolute_url }}"
+                                                      class="d-flex justify-content-between align-items-center text-primary">
+                                    <span>{{ category.name }}</span>
+                                </a>
+                                    {% for child in category.child_categories.all %}
+                                        <ul class="list-unstyled">
+                                            <li><a href="{{ child.get_absolute_url }}">{{ child.name }}<small class="float-right">{{ category.child_categories.count }}</small></a></li>
+                                        </ul>
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+
 
                         </ul>
                     </div>
