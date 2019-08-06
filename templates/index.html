@@ -39,94 +39,96 @@
     </section>
     <!-- Collection -->
     {% for category in categories %}
-        <section class="collection {% if forloop.counter|divisibleby:2 %}{% else %}gray-bg{% endif %}"
-                 style=" padding-bottom: 10px;">
-            <div class="container">
-                <header class="text-center">
-                    <h2 class="text-uppercase">
-                        <small>PRODUITS POPULAIRES</small>
-                        {{ category.name }}
-                    </h2>
-                </header>
-                <div class="row">
-                    {% for product in category.get_featured_products %}
-                        <div class="col-8 col-md-4 col-lg-3 mb-3 mx-auto">
-                            {% include "productCard.html" %}
-                        </div>
-                    {% endfor %}
+        {% if category.products.count %}
+            <section class="collection {% if forloop.counter|divisibleby:2 %}{% else %}gray-bg{% endif %}" style=" padding-bottom: 10px;">
+                <div class="container">
+                    <header class="text-center">
+                        <h2 class="text-uppercase">
+                            <small>PRODUITS POPULAIRES</small>
+                            {{ category.name }}
+                        </h2>
+                    </header>
+                    <div class="row">
+                        {% for product in category.get_featured_products %}
+                            <div class="col-8 col-md-4 col-lg-3 mb-3 mx-auto">
+                                {% include "productCard.html" %}
+                            </div>
+                        {% endfor %}
 
+                    </div>
                 </div>
-        </section>
+            </section>
+        {% endif %}
     {% endfor %}
-    <!-- Blog Section-->
-    <section class="blog gray-bg">
-        <div class="container">
-            <header class="text-center">
-                <h2 class="text-uppercase">Nos derniers articles</h2>
-            </header>
-            <div class="row">
-                <!-- post-->
-                <div class="col-lg-12 ">
-                    <div class="post post-gray d-flex align-items-center flex-md-row flex-column">
-                        <div class="thumbnail d-flex-align-items-center justify-content-center">
-                            <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/images/he0/hfd/9110603038750/razer-blade-stealth-13-hero-mobile.jpg"
-                                 alt="...">
-                        </div>
-                        <div class="info">
-                            <h4 class="h5">
-                                <a href="post.html">Newest photo apps </a>
-                            </h4>
-                            <span class="date"><i class="fa fa-clock-o"></i>May 10th 2016</span>
-                            <p>ellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
-                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
-                                Aenean ultricies mi vitae est. </p>
-                            <a href="post.html" class="read-more">Read More<i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="post post-gray d-flex align-items-center flex-md-row flex-column">
-
-                        <div class="info">
-                            <h4 class="h5">
-                                <a href="post.html">Newest photo apps </a>
-                            </h4>
-                            <span class="date"><i class="fa fa-clock-o"></i>May 10th 2016</span>
-                            <p>ellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
-                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
-                                Aenean ultricies mi vitae est. </p>
-                            <a href="post.html" class="read-more">Read More<i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="thumbnail d-flex-align-items-center justify-content-center">
-                            <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/images/he0/hfd/9110603038750/razer-blade-stealth-13-hero-mobile.jpg"
-                                 alt="...">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="post post-gray d-flex align-items-center flex-md-row flex-column">
-
-                        <div class="info">
-                            <h4 class="h5">
-                                <a href="post.html">Newest photo apps </a>
-                            </h4>
-                            <span class="date"><i class="fa fa-clock-o"></i>May 10th 2016</span>
-                            <p>ellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
-                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
-                                Aenean ultricies mi vitae est. </p>
-                            <a href="post.html" class="read-more">Read More<i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="thumbnail d-flex-align-items-center justify-content-center">
-                            <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/images/he0/hfd/9110603038750/razer-blade-stealth-13-hero-mobile.jpg"
-                                 alt="...">
-                        </div>
-                    </div>
-                </div>
-                <!-- /end post-->
-            </div>
-        </div>
-    </section>
-    <!-- Brands Section-->
+    {#    <!-- Blog Section-->#}
+    {#    <section class="blog gray-bg">#}
+    {#        <div class="container">#}
+    {#            <header class="text-center">#}
+    {#                <h2 class="text-uppercase">Nos derniers articles</h2>#}
+    {#            </header>#}
+    {#            <div class="row">#}
+    {#                <!-- post-->#}
+    {#                <div class="col-lg-12 ">#}
+    {#                    <div class="post post-gray d-flex align-items-center flex-md-row flex-column">#}
+    {#                        <div class="thumbnail d-flex-align-items-center justify-content-center">#}
+    {#                            <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/images/he0/hfd/9110603038750/razer-blade-stealth-13-hero-mobile.jpg"#}
+    {#                                 alt="...">#}
+    {#                        </div>#}
+    {#                        <div class="info">#}
+    {#                            <h4 class="h5">#}
+    {#                                <a href="post.html">Newest photo apps </a>#}
+    {#                            </h4>#}
+    {#                            <span class="date"><i class="fa fa-clock-o"></i>May 10th 2016</span>#}
+    {#                            <p>ellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis#}
+    {#                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.#}
+    {#                                Aenean ultricies mi vitae est. </p>#}
+    {#                            <a href="post.html" class="read-more">Read More<i class="fa fa-long-arrow-right"></i></a>#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-lg-6">#}
+    {#                    <div class="post post-gray d-flex align-items-center flex-md-row flex-column">#}
+    {##}
+    {#                        <div class="info">#}
+    {#                            <h4 class="h5">#}
+    {#                                <a href="post.html">Newest photo apps </a>#}
+    {#                            </h4>#}
+    {#                            <span class="date"><i class="fa fa-clock-o"></i>May 10th 2016</span>#}
+    {#                            <p>ellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis#}
+    {#                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.#}
+    {#                                Aenean ultricies mi vitae est. </p>#}
+    {#                            <a href="post.html" class="read-more">Read More<i class="fa fa-long-arrow-right"></i></a>#}
+    {#                        </div>#}
+    {#                        <div class="thumbnail d-flex-align-items-center justify-content-center">#}
+    {#                            <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/images/he0/hfd/9110603038750/razer-blade-stealth-13-hero-mobile.jpg"#}
+    {#                                 alt="...">#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-lg-6">#}
+    {#                    <div class="post post-gray d-flex align-items-center flex-md-row flex-column">#}
+    {##}
+    {#                        <div class="info">#}
+    {#                            <h4 class="h5">#}
+    {#                                <a href="post.html">Newest photo apps </a>#}
+    {#                            </h4>#}
+    {#                            <span class="date"><i class="fa fa-clock-o"></i>May 10th 2016</span>#}
+    {#                            <p>ellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis#}
+    {#                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.#}
+    {#                                Aenean ultricies mi vitae est. </p>#}
+    {#                            <a href="post.html" class="read-more">Read More<i class="fa fa-long-arrow-right"></i></a>#}
+    {#                        </div>#}
+    {#                        <div class="thumbnail d-flex-align-items-center justify-content-center">#}
+    {#                            <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/images/he0/hfd/9110603038750/razer-blade-stealth-13-hero-mobile.jpg"#}
+    {#                                 alt="...">#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <!-- /end post-->#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </section>#}
+    {#    <!-- Brands Section-->#}
     <section class="brands">
         <div class="container">
             <!-- Brands Slider-->

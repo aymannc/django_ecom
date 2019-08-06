@@ -1,7 +1,7 @@
 from allauth.account.forms import LoginForm
 from django import forms
 
-from .models import Coupon, Order, Address, Contact
+from .models import *
 
 
 class CouponForm(forms.ModelForm):
@@ -54,3 +54,23 @@ class ContactForm(forms.ModelForm):
         self.fields['message'].widget = forms.Textarea(attrs={'rows': 4, 'cols': 40})
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
+
+
+class NewsLetterForm(forms.ModelForm):
+    email = forms.EmailField(max_length=50, label='Votre adresse email')
+
+    class Meta:
+        model = NewsLetter
+        fields = "__all__"
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        exclude = ('user',)
+
+
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ('image',)

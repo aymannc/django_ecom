@@ -27,10 +27,15 @@
 
     function func() {
         try {
+            document.getElementById("id_oldpassword").className = "form-control";
             document.getElementById("id_email").className = "form-control";
             document.getElementById("id_password1").className = "form-control";
             document.getElementById("id_password2").className = "form-control";
         } catch (err) {
         }
+    }
+
+    function is_changed() {
+        document.getElementById("changed").value = "True";
     }
 </script>

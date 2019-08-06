@@ -1,15 +1,15 @@
 import random
 import string
 from urllib.parse import quote_plus
-from django.db.models import FieldDoesNotExist
+from django.db.models import FieldDoesNotExist, Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-
-from .forms import CouponForm, MessageForm, AddressForm, ContactForm
+from .forms import *
 from .models import *
+from allauth.account.forms import ChangePasswordForm
 
 
 def random_ref():
@@ -38,6 +38,20 @@ def product_details(req, slug):
     return render(req, "detail.html", context)
 
 
+def search(request):
+    queryset = Post.objects.all()
+    query = request.GET.get('search')
+    if query:
+        queryset = queryset.filter(
+            Q(title__icontains=query) |
+            Q(overview__icontains=query)
+        ).distinct()
+    context = {
+        'queryset': queryset
+    }
+    return render(request, 'search_results.html', context)
+
+
 def shop(req):
     categories = Category.objects.filter(parent_category=None)
     valid = False
@@ -53,13 +67,20 @@ def shop(req):
                 valid = True
             except FieldDoesNotExist:
                 messages.error(req, "Non valid selector")
-    selected = ""
+    selected = "-date_added"
     if valid:
-        product_list = Product.objects.all().order_by(value)
         selected = value
-    else:
-        product_list = Product.objects.all().order_by("-date_added")
-        selected = "-date_added"
+    product_list = Product.objects.all().order_by(selected)
+    search = req.GET.get('search')
+    if search:
+        product_list = product_list.filter(
+            Q(product_name__icontains=search) |
+            Q(product_name__icontains=search) |
+            Q(product_description__icontains=search) |
+            Q(product_categorie__name__icontains=search) |
+            Q(tags__tag__icontains=search)
+        ).distinct()
+
     paginator = Paginator(product_list, 9)
     page_request_var = 'page'
     page = req.GET.get(page_request_var)
@@ -83,11 +104,54 @@ def shop(req):
 
 
 def shop_by_category(req, slug):
-    category = Category.objects.filter(slug=slug)
+    try:
+        category = Category.objects.get(slug=slug)
+    except:
+        messages.error(req, "Non Valid Category")
+        return redirect("shop")
+
+    categories = Category.objects.filter(parent_category=None)
+    valid = False
+    value = None
+    if req.POST.get("order"):
+        value = req.POST["order"]
+        try:
+            Product._meta.get_field(value)
+            valid = True
+        except FieldDoesNotExist:
+            try:
+                Product._meta.get_field(value[1:])
+                valid = True
+            except FieldDoesNotExist:
+                messages.error(req, "Non valid selector")
+    selected = "-date_added"
+    if valid:
+        selected = value
+    if category.parent_category:
+        product_list = category.products.order_by(selected)
+    else:
+        product_list = category.get_parent_products()
+
+    paginator = Paginator(product_list, 9)
+    page_request_var = 'page'
+    page = req.GET.get(page_request_var)
+    try:
+        paginated_queryset = paginator.page(page)
+    except PageNotAnInteger:
+        paginated_queryset = paginator.page(1)
+    except EmptyPage:
+        paginated_queryset = paginator.page(paginator.num_pages)
+
     context = {
-        "category": category,
+        'categories': categories,
+        'selected': selected,
+        'queryset': paginated_queryset,
+        'count': paginator.count,
+        'start': paginated_queryset.start_index,
+        'end': paginated_queryset.end_index,
+        'page_request_var': page_request_var,
     }
-    return render(req, "shop.html", context)
+    return render(req, 'shop.html', context)
 
 
 def not_found(req):
@@ -335,7 +399,15 @@ def order_details(req, ref):
 
 @login_required
 def profile(req):
-    return render(req, "customer-account.html", {})
+    user = req.user
+    # TODO: add hidden input to know which form has changed
+    form = ChangePasswordForm()
+    image = ImageForm()
+    context = {
+        "form": form,
+        "image": image,
+    }
+    return render(req, "customer-account.html", context)
 
 
 @login_required
@@ -513,3 +585,14 @@ def confirmation(req):
         "user": req.user,
     }
     return render(req, "checkout5.html", context)
+
+
+def newsletter(req):
+    if req.POST:
+        form = NewsLetterForm(req.POST or None)
+        if form.is_valid():
+            form.save()
+            messages.success(req, "Email added successful ")
+        else:
+            messages.error(req, form.errors)
+    return redirect(req.POST.get("next", 'home'))

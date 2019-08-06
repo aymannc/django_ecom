@@ -20,10 +20,9 @@ STATUS_CHOICES = [
     ('COMPLETED', 'Completed'),
     ('REFUNDED', 'Refunded')
 ]
-PAYMENT_CHOICES = [
-    ('0', '0'),
-    ('liv', 'livraison'),
-    ('100', '100%'),
+GENDER_CHOICES = [
+    ('F', 'Female'),
+    ('M', 'Male'),
 ]
 
 
@@ -68,10 +67,22 @@ class Category(BaseModel):
         return self.name
 
     def get_absolute_url(self):
+        # if not self.parent_category :
+        #     return reverse("shop")
         return reverse("shop_by_category", kwargs={"slug": self.slug})
 
     def get_featured_products(self):
         return self.products.all().filter(visible=True)
+
+    def get_parent_products(self):
+        if self.parent_category:
+            return None
+        else:
+            products = []
+            for category in self.child_categories.all():
+                for product in category.products.all():
+                    products.append(product)
+        return products
 
 
 class Banner(BaseModel):
@@ -120,8 +131,8 @@ class Product(BaseModel):
 
     product_images = models.ManyToManyField(Image)
 
-    product_categorie = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name='products')
+    product_categorie = models.ManyToManyField(
+        Category, related_name='products')
 
     related_products = models.ManyToManyField(
         'self', related_name='related_products', blank=True)
@@ -259,7 +270,7 @@ class OrderItem(BaseModel):
 
 class Order(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True,
-                             on_delete=models.SET_NULL)
+                             on_delete=models.SET_NULL, related_name="orders")
     ref_code = models.CharField(
         max_length=100, unique=True)
     start_date = models.DateTimeField(auto_now_add=True)
@@ -353,7 +364,7 @@ class Refund(models.Model):
 
 class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE, related_name="addresses")
     full_name = models.CharField(max_length=50)
     societe = models.CharField(max_length=50, blank=True)
     tva = models.CharField(max_length=100, blank=True)
@@ -408,3 +419,25 @@ class Contact(BaseModel):
 
     def __str__(self):
         return f"From {self.firstname} {self.lastname}"
+
+
+class NewsLetter(BaseModel):
+    email = models.EmailField()
+
+    def __str__(self):
+        return f"From {self.email}"
+
+
+class UserProfile(BaseModel):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_profile', on_delete=models.CASCADE,
+                             unique=True)
+    gender = models.CharField(
+        max_length=8,
+        choices=GENDER_CHOICES,
+    )
+    telephone = models.CharField(max_length=10)
+    profile_picture = models.OneToOneField(Image, on_delete=models.SET_NULL, blank=True, null=True)
+    address = models.ForeignKey(Address, related_name="user_profile", on_delete=models.SET_NULL, null=True,blank=True)
+
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"

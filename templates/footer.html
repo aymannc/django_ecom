@@ -1,4 +1,5 @@
 {% load static %}
+{% load mytags %}
 <footer class="main-footer">
     <!-- Service Block-->
     <div class="services-block">
@@ -70,10 +71,12 @@
                 <div class="newsletter col-lg-4">
                     <h5 class="text-uppercase">Newsletter </h5>
                     <p>Inscrivez-vous à notre newsletter pour recevoir des offres exclusives </p>
-                    <form action="#" id="newsletter-form">
+                    <form action="{% url "newsletter" %}" method="post">
+                        {% csrf_token %}
                         <div class="form-group">
-                            <input type="email" name="subscribermail" placeholder="Your Email Address">
-                            <button type="submit"><i class="fa fa-paper-plane"></i></button>
+                            {% newsletter_form %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button type="submit" class="pt-4 mt-1"><i class="fa fa-paper-plane"></i></button>
                         </div>
                     </form>
                 </div>

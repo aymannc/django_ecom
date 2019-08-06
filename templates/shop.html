@@ -49,14 +49,26 @@
                     <header class="d-flex justify-content-between align-items-start">
                         <span class="visible-items">Showing <strong>{{ start }}-{{ end }} </strong>of <strong>{{ count }} </strong>results</span>
                         <form method="post">
-                        {% csrf_token %}
+                            {% csrf_token %}
                             <select name="order" class="bs-select " onchange="this.form.submit()">
-                                <option {% if selected == "product_name"%}selected{% endif %} value="product_name">Nom, A à Z</option>
-                                <option {% if selected == "-product_name"%}selected{% endif %} value="-product_name">Nom, Z à A</option>
-                                <option {% if selected == "product_price"%}selected{% endif %} value="product_price">Prix, croissant</option>
-                                <option {% if selected == "-product_price"%}selected{% endif %} value="-product_price">Prix, décroissant</option>
-                                <option {% if selected == "date_added"%}selected{% endif %} value="date_added">Date, croissant</option>
-                                <option {% if selected == "-date_added"%}selected{% endif %} value="-date_added">Date, décroissant</option>
+                                <option {% if selected == "product_name" %}selected{% endif %} value="product_name">Nom,
+                                    A à Z
+                                </option>
+                                <option {% if selected == "-product_name" %}selected{% endif %} value="-product_name">
+                                    Nom, Z à A
+                                </option>
+                                <option {% if selected == "product_price" %}selected{% endif %} value="product_price">
+                                    Prix, croissant
+                                </option>
+                                <option {% if selected == "-product_price" %}selected{% endif %} value="-product_price">
+                                    Prix, décroissant
+                                </option>
+                                <option {% if selected == "date_added" %}selected{% endif %} value="date_added">Date,
+                                    croissant
+                                </option>
+                                <option {% if selected == "-date_added" %}selected{% endif %} value="-date_added">Date,
+                                    décroissant
+                                </option>
                             </select>
                         </form>
                     </header>
@@ -67,20 +79,24 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <nav aria-label="page navigation example" class="d-flex justify-content-center">
-                        <ul class="pagination pagination-custom">
-                            {% if queryset.has_previous %}
-                                <li class="page-item"><a
-                                        href="?{{ page_request_var }}={{ queryset.previous_page_number }}"
-                                        class="page-link"> <i class="fa fa-angle-left"></i></a></li>
-                            {% endif %}
-                            <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.number }}"
-                                                     class="page-link active">{{ queryset.number }}</a></li>
-                            {% if queryset.has_next %}
-                                <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.next_page_number }}"
-                                                         class="page-link"> <i class="fa fa-angle-right"></i></a></li>
-                            {% endif %}</ul>
-                    </nav>
+                    {% if count %}
+                        <nav aria-label="page navigation example" class="d-flex justify-content-center">
+                            <ul class="pagination pagination-custom">
+                                {% if queryset.has_previous %}
+                                    <li class="page-item"><a
+                                            href="?{{ page_request_var }}={{ queryset.previous_page_number }}"
+                                            class="page-link"> <i class="fa fa-angle-left"></i></a></li>
+                                {% endif %}
+                                <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.number }}"
+                                                         class="page-link active">{{ queryset.number }}</a></li>
+                                {% if queryset.has_next %}
+                                    <li class="page-item"><a
+                                            href="?{{ page_request_var }}={{ queryset.next_page_number }}"
+                                            class="page-link"> <i class="fa fa-angle-right"></i></a></li>
+                                {% endif %}</ul>
+                        </nav>
+                    {% endif %}
+
                 </div>
                 <!-- / Grid End-->
             </div>

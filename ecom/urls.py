@@ -56,6 +56,7 @@ urlpatterns = [
     path('details/<slug:slug>', product_details, name="product-details"),
     path('addtofavorite/<slug:slug>', product_details, name="add-to-favorite"),
 
+    path('newsletter/', newsletter, name="newsletter"),
     path('404/', not_found, name="not-found"),
 
 ]
