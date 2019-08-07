@@ -67,17 +67,36 @@
                     <div class="block-header mb-5">
                         <h5>Change User Picture</h5>
                     </div>
+                    <div class="row">
+                        {% if image.errors %}
+                            {% for field in image %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-warning">
+                                        <strong>{{ field.label }}:{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in image.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ field.label }} : {{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                     <form class="content-block" enctype="multipart/form-data" method="post">
                         {% csrf_token %}
+                        <input type="hidden" name="picture" value="changed">
                         <div class="row">
                             <div class="col-sm-6 mx-auto">
                                 <div class="form-group">
                                     <label for="street" class="form-label mb-3">
-                                        Current: <a
-                                            href="{{ request.user.user_profile.all.0.profile_picture.get_absolute_url }}">
-                                        <img src="{{ request.user.user_profile.all.0.profile_picture.get_absolute_url }}"
-                                             width="50px">
-                                    </a>
+                                        {% with request.user.user_profile.profile_picture.get_absolute_url  as url %}
+                                            Current: <a
+                                                href="{{ url }}">
+                                            <img src="{{ url }}"
+                                                 width="50px">
+                                        </a>
+                                        {% endwith %}
                                     </label><br>
                                     <label for="street" class="form-label mb-3">Chose new one : </label>
                                     {{ image.as_p }}
@@ -94,46 +113,56 @@
                     <div class="block-header mb-5">
                         <h5>Personal details</h5>
                     </div>
+                    <div class="row">
+                        {% if userprofile.errors %}
+                            {% for field in userprofile %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-warning">
+                                        <strong>{{ field.label }}:{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in userprofile.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ field.label }} : {{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                     <form class="content-block" enctype="multipart/form-data" method="post">
                         {% csrf_token %}
+                        <input type="hidden" name="infos" value="changed">
                         <div class="row">
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
-                                    <label for="country" class="form-label">Gender</label>
-                                    <select id="Gender" class="form-control" style=" padding : 0px 20px;">
-                                        <option value="M">Male</option>
-                                        <option value="F">Female</option>
-                                    </select>
+                                    <label for="country" class="form-label">{{ userprofile.gender.label }}</label>
+                                    {{ userprofile.gender }}
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="firstname" class="form-label">Firstname</label>
-                                    <input id="firstname" type="text" class="form-control" required
-                                           value="{{ request.user.first_name }}">
+                                    <label for="firstname" class="form-label">{{ userprofile.firstname.label }}</label>
+                                    {{ userprofile.firstname }}
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="lastname" class="form-label">Lastname</label>
-                                    <input id="lastname" type="text" class="form-control"
-                                           value="{{ request.user.last_name }}" required>
+                                    <label for="lastname" class="form-label">{{ userprofile.lastname.label }}</label>
+                                    {{ userprofile.lastname }}
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="phone" class="form-label">Telephone</label>
-                                    <input id="phone" type="text" class="form-control"
-                                           value="{{ request.user.user_profile.all.0.telephone }}" required>
+                                    <label for="phone" class="form-label">{{ userprofile.telephone.label }}</label>
+                                    {{ userprofile.telephone }}
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input id="email" type="text" class="form-control" value="{{ request.user.email }}"
-                                           required>
+                                    <label for="email" class="form-label">{{ userprofile.email.label }}</label>
+                                    {{ userprofile.email }}
                                 </div>
                             </div>
                         </div>
@@ -142,6 +171,7 @@
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save changes
                                 </button>
                             </div>
+
                         </div>
                     </form>
                 </div>

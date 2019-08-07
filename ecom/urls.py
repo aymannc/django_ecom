@@ -25,7 +25,7 @@ urlpatterns = [
 
     path('', home, name="home"),
     path('contact/', contact, name="contact"),
-
+    # TODO : make the actions available and change the checkout process
     path('orders/', orders, name="user-orders"),
     path('orders-details/<slug:ref>', order_details, name="order-details"),
     path('order-modify/<slug:ref>', order_details, name="order-modify"),

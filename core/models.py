@@ -367,12 +367,12 @@ class Address(models.Model):
                              on_delete=models.CASCADE, related_name="addresses")
     full_name = models.CharField(max_length=50)
     societe = models.CharField(max_length=50, blank=True)
-    tva = models.CharField(max_length=100, blank=True)
+    # tva = models.CharField(max_length=100, blank=True)
     street_address = models.CharField(max_length=100)
-    zip = models.CharField(max_length=10)
-    city = models.CharField(max_length=50)
-    state = models.CharField(max_length=50)
-    country = models.CharField(max_length=50, default="Maroc")
+    zip = models.CharField(max_length=5)
+    city = models.CharField(max_length=20)
+    state = models.CharField(max_length=20)
+    country = models.CharField(max_length=20, default="Maroc")
     phone_number = models.CharField(max_length=10)
     default = models.BooleanField(default=False)
 
@@ -429,8 +429,8 @@ class NewsLetter(BaseModel):
 
 
 class UserProfile(BaseModel):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_profile', on_delete=models.CASCADE,
-                             unique=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='user_profile', on_delete=models.CASCADE,
+                            )
     gender = models.CharField(
         max_length=8,
         choices=GENDER_CHOICES,

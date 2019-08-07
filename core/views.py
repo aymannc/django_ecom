@@ -2,6 +2,7 @@ import random
 import string
 from urllib.parse import quote_plus
 from django.db.models import FieldDoesNotExist, Q
+from django.forms.models import model_to_dict
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -36,21 +37,6 @@ def product_details(req, slug):
         "share_string": quote_plus(product.product_description)
     }
     return render(req, "detail.html", context)
-
-
-def search(request):
-    queryset = Post.objects.all()
-    query = request.GET.get('search')
-    if query:
-        queryset = queryset.filter(
-            Q(title__icontains=query) |
-            Q(overview__icontains=query)
-        ).distinct()
-    context = {
-        'queryset': queryset
-    }
-    return render(request, 'search_results.html', context)
-
 
 def shop(req):
     categories = Category.objects.filter(parent_category=None)
@@ -399,12 +385,64 @@ def order_details(req, ref):
 
 @login_required
 def profile(req):
-    user = req.user
-    # TODO: add hidden input to know which form has changed
     form = ChangePasswordForm()
-    image = ImageForm()
+    user = req.user
+    # user_profile = user.user_profile.all()[0]
+    user_profile = user.user_profile
+    if user_profile:
+        data = {'gender': user_profile.gender, 'firstname': user.first_name, 'lastname': user.last_name,
+                'telephone': user_profile.telephone,
+                'email': user.email}
+    else:
+        data = {}
+    if req.method == 'POST':
+        if req.POST.get("picture"):
+            image = ImageForm(req.POST, req.FILES)
+            if image.is_valid():
+                image = image.save()
+                if user_profile:
+                    user_profile.profile_picture = image
+                    user_profile.save()
+                else:
+                    user_profile = UserProfile()
+                    user_profile.user = user
+                    user_profile.profile_picture = image
+                    user_profile.save()
+                messages.success(req, "Image uploaded successfully")
+                image = ImageForm()
+            else:
+                messages.error(req, image.errors)
+
+            userprofile = UserProfileForm(initial=data)
+        elif req.POST.get("infos"):
+            userprofile = UserProfileForm(req.POST)
+            if userprofile.is_valid():
+                user.first_name = userprofile.cleaned_data['firstname']
+                user.last_name = userprofile.cleaned_data['lastname']
+                user.email = userprofile.cleaned_data['email']
+                user.save()
+                if user_profile:
+                    user_profile.gender = userprofile.cleaned_data['gender']
+                    user_profile.telephone = userprofile.cleaned_data['telephone']
+                    user_profile.save()
+                else:
+                    user_profile = UserProfile()
+                    user_profile.user = user
+                    user_profile.gender = userprofile.cleaned_data['gender']
+                    user_profile.telephone = userprofile.cleaned_data['telephone']
+                    user_profile.save()
+                messages.success(req, "Personal information uploaded successfully")
+            else:
+                messages.error(req, "Error in form")
+
+            image = ImageForm()
+    else:
+        userprofile = UserProfileForm(initial=data)
+        image = ImageForm()
+
     context = {
         "form": form,
+        "userprofile": userprofile,
         "image": image,
     }
     return render(req, "customer-account.html", context)
@@ -412,7 +450,63 @@ def profile(req):
 
 @login_required
 def addresses(req):
-    return render(req, "customer-addresses.html", {})
+    modify = None
+    form = AddressForm()
+    id = req.POST.get('id', None)
+    if req.method == "POST":
+        action = req.POST.get('action')
+        if action == "add":
+            form = AddressForm(req.POST or None)
+            if form.is_valid():
+                address = Address(**form.cleaned_data)
+                address.user = req.user
+                address.save()
+                messages.success(req, "Address Saved")
+                form = AddressForm()
+            else:
+                messages.error(req, "Errors in Form")
+        else:
+            if id:
+                try:
+                    address = Address.objects.get(id=id)
+                except:
+                    messages.error(req, "Non valid Address")
+                    return redirect("user-addresses")
+                if action == "updated":
+                    form = AddressForm(req.POST or None)
+                    if form.is_valid():
+                        Address.objects.filter(id=id).update(**form.cleaned_data)
+                        messages.info(req, "Address Updated")
+                        form = AddressForm()
+                    else:
+                        modify = True
+                        messages.error(req, "Errors in Form")
+
+                if action == "Modify":
+                    form = AddressForm(initial=model_to_dict(address))
+                    modify = True
+                elif action == "Delete":
+                    address.delete()
+                    messages.info(req, "Address Deleted")
+                elif action == "Default":
+                    try:
+                        def_address = req.user.addresses.filter(default=True)[0]
+                        def_address.default = False
+                        def_address.save()
+                    except:
+                        pass
+                    address.default = True
+                    address.save()
+                    messages.info(req, "Address is set to default")
+            else:
+                messages.error(req, "Non valid Address")
+    context = {
+        "form": form,
+        "modify": modify,
+        "id": id,
+        "user_addresses": req.user.addresses.all
+    }
+    return render(req, "customer-addresses.html", context)
 
 
 @login_required

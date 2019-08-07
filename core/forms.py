@@ -1,7 +1,12 @@
 from allauth.account.forms import LoginForm
 from django import forms
-
+import string
 from .models import *
+
+GENDER_CHOICES = [
+    ('F', 'Female'),
+    ('M', 'Male'),
+]
 
 
 class CouponForm(forms.ModelForm):
@@ -41,6 +46,18 @@ class AddressForm(forms.ModelForm):
         data = self.cleaned_data['phone_number']
         if len(data) < 10:
             raise forms.ValidationError("phone number should be exactly 10!")
+        for digit in data:
+            if digit not in string.digits:
+                raise forms.ValidationError("Use digits only")
+        return data
+
+    def clean_zip(self, exclude=None):
+        data = self.cleaned_data['zip']
+        if not len(data) == 5:
+            raise forms.ValidationError("zip should be exactly 5!")
+        for digit in data:
+            if digit not in string.digits:
+                raise forms.ValidationError("Use digits only")
         return data
 
 
@@ -64,10 +81,20 @@ class NewsLetterForm(forms.ModelForm):
         fields = "__all__"
 
 
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        exclude = ('user',)
+class UserProfileForm(forms.Form):
+    gender = forms.ChoiceField(
+        choices=GENDER_CHOICES,
+        widget=forms.Select(attrs={'style': ' padding : 0px 20px'}),
+    )
+    firstname = forms.CharField(max_length=50)
+    lastname = forms.CharField(max_length=50)
+    telephone = forms.CharField(max_length=10)
+    email = forms.EmailField(max_length=30)
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
 
 
 class ImageForm(forms.ModelForm):
