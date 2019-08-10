@@ -94,13 +94,17 @@
                                         <h6 class="text-uppercase">Adresse de livraison</h6>
                                     </div>
                                     <div class="block-body text-center">
-                                        <p>{{ order.billing_address.full_name }}<br>
-                                            {{ order.billing_address.phone_number }}<br>
-                                            {{ order.billing_address.street_address }} {{ order.billing_address.apartment_address }}<br>
-                                            {{ order.billing_address.city }}, {{ order.billing_address.state }}<br>
-                                            {{ order.billing_address.zip }}, {{ order.billing_address.country }}<br>
+                                        {% with order.shipping_address as address %}
+                                            <p>{{ address.full_name }}<br>
+                                                {{ address.phone_number }}<br>
+                                                {{ address.street_address }} {{ address.apartment_address }}<br>
+                                                {{ address.city }}, {{ address.state }}<br>
+                                                {{ address.zip }}, {{ address.country }}<br>
 
-                                        </p>
+                                            </p>
+                                        {% endwith %}
+
+                                        <a href="{% url "checkout" %}" class="btn btn-info text-white" va>Mdifier</a>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -110,13 +114,14 @@
                                     <div class="block-body text-center">
                                         <p> {% if order.delivery_method.icon %}
                                             <img src="{{ order.delivery_method.icon.get_absolute_url }}"
-                                                 alt="{{ order.delivery_method.icon.alt }}" sizes="50px"><br>
+                                                 alt="{{ order.delivery_method.icon.alt }}" width="50px"><br>
                                         {% endif %}
                                             {{ order.delivery_method.name }}<br>
                                             {{ order.delivery_method.description }}<br>
                                             {{ order.delivery_method.shipping_price }} DH<br>
 
                                         </p>
+                                        <a href="{% url "delivery" %}" class="btn btn-info text-white" va>Mdifier</a>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -131,6 +136,7 @@
                                             {{ order.payment_method.description }}<br>
 
                                         </p>
+                                        <a href="{% url "payment" %}" class="btn btn-info text-white" va>Mdifier</a>
                                     </div>
                                 </div>
 

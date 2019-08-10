@@ -5,13 +5,21 @@
         <div class="container">
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
-                    <h1>Checkout</h1>
-                    <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                    {% if change %}
+                        <h3>Update Payment Method</h3>
+                    {% else %}
+                        <h1>Checkout</h1>
+                        <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                    {% endif %}
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
                         <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
-                        <li class="breadcrumb-item active">Checkout</li>
+                        {% if change %}
+                            <li class="breadcrumb-item active">Update Payment Method</li>
+                        {% else %}
+                            <li class="breadcrumb-item active">Payment Method</li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -21,14 +29,20 @@
     <section class="checkout">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8">
-                    <ul class="nav nav-pills">
-                        <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Address</a></li>
-                        <li class="nav-item"><a href={% url "delivery" %} class="nav-link">Delivery Method </a></li>
-                        <li class="nav-item"><a href={% url "payment" %} class="nav-link active">Payment Method </a>
-                        </li>
-                        <li class="nav-item"><a href="#" class="nav-link disabled">Order Review</a></li>
-                    </ul>
+                <div class="col-lg-8 {% if change %} offset-2 {% endif %}">
+                    {% if change %}
+                        <div class="block-header mb-2">
+                            <h6 class="text-uppercase">Update Delivery Method</h6>
+                        </div>
+                    {% else %}
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Address</a></li>
+                            <li class="nav-item"><a href={% url "delivery" %} class="nav-link">Delivery Method </a></li>
+                            <li class="nav-item"><a href={% url "payment" %} class="nav-link active">Payment Method </a>
+                            </li>
+                            <li class="nav-item"><a href="#" class="nav-link disabled">Order Review</a></li>
+                        </ul>
+                    {% endif %}
                     {% if payment_methods %}
                         <div class="tab-content">
                             <div id="headingTwo" role="tab" class="card-header text-center">
@@ -112,7 +126,9 @@
                         </div>
                     {% endif %}
                 </div>
-                {% order_summary %}
+                {% if not change %}
+                    {% order_summary %}
+                {% endif %}
             </div>
         </div>
     </section>

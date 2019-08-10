@@ -5,13 +5,23 @@
         <div class="container">
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
-                    <h1>Checkout</h1>
-                    <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                    {% if change %}
+                        <h3>Update Delivery Method</h3>
+                    {% else %}
+                        <h1>Checkout</h1>
+                        <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                    {% endif %}
+
+
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
                         <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
-                        <li class="breadcrumb-item active">Checkout</li>
+                        {% if change %}
+                            <li class="breadcrumb-item active">Update Delivery Method</li>
+                        {% else %}
+                            <li class="breadcrumb-item active">Delivery Method</li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -21,18 +31,29 @@
     <section class="checkout">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8">
-                    <ul class="nav nav-pills">
-                        <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Address</a></li>
-                        <li class="nav-item"><a href={% url "delivery" %} class="nav-link active">Delivery Method </a>
-                        </li>
-                        <li class="nav-item"><a href="#" class="nav-link disabled">Payment Method </a></li>
-                        <li class="nav-item"><a href="#" class="nav-link disabled">Order Review</a></li>
-                    </ul>
+                <div class="col-lg-8 {% if change %} offset-2 {% endif %}">
+
+                    {% if change %}
+                        <div class="block-header mb-2">
+                            <h6 class="text-uppercase">Update Delivery Method</h6>
+                        </div>
+                    {% else %}
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Address</a></li>
+                            <li class="nav-item"><a href={% url "delivery" %} class="nav-link active">Delivery
+                                Method </a>
+                            </li>
+                            <li class="nav-item"><a href="#" class="nav-link disabled">Payment Method </a></li>
+                            <li class="nav-item"><a href="#" class="nav-link disabled">Order Review</a></li>
+                        </ul>
+                    {% endif %}
+
                     <div class="tab-content">
                         <div id="delivery-method" class="tab-block">
-
                             <form method="POST" id="shipingform" class="shipping-form">
+                            {% if change %}
+                                <input type="hidden" name="updated" value="{{ order_id }}">
+                            {% endif %}
                                 {% csrf_token %}
                                 <div class="row">
                                     {% if user_method %}
@@ -87,8 +108,10 @@
                             </form>
 
                             <div class="CTAs d-flex justify-content-between flex-column flex-lg-row">
-                                <a href="checkout1.html" class="btn btn-template-outlined wide prev"><i
-                                        class="fa fa-angle-left"></i>Back to Address</a>
+                                {% if not change %}
+                                    <a href="checkout1.html" class="btn btn-template-outlined wide prev"><i
+                                            class="fa fa-angle-left"></i>Back to Address</a>
+                                {% endif %}
                                 <button type="submit " form="shipingform" class="btn btn-template wide">Choose payment
                                     method <i class="fa fa-angle-right"></i></button>
 
@@ -96,7 +119,9 @@
                         </div>
                     </div>
                 </div>
+            {% if not change %}
                 {% order_summary %}
+            {% endif %}
             </div>
         </div>
     </section>

@@ -5,6 +5,7 @@ from django.db.models import FieldDoesNotExist, Q
 from django.forms.models import model_to_dict
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -37,6 +38,7 @@ def product_details(req, slug):
         "share_string": quote_plus(product.product_description)
     }
     return render(req, "detail.html", context)
+
 
 def shop(req):
     categories = Category.objects.filter(parent_category=None)
@@ -144,7 +146,7 @@ def not_found(req):
     return render(req, "404.html", {})
 
 
-def remove_form_cart(req, id):
+def remove_form_cart(req, id, red):
     order_item = OrderItem.objects.get(id=id)
     order = Order.objects.get(id=order_item.order.id)
     order_item.delete()
@@ -157,12 +159,15 @@ def remove_form_cart(req, id):
                 req.session.modified = True
         except:
             pass
-        order.delete()
-        messages.success(req, "Card is Empty ")
-        return redirect("home")
+        if not order.ordered:
+            messages.success(req, "Card is Empty ")
+            order.delete()
+            return redirect("home")
+        else:
+            order.delete()
 
     messages.success(req, "Item deleted successfully")
-    return redirect("cart")
+    return redirect(red)
 
 
 def cart_view(req):
@@ -211,38 +216,36 @@ def cart_view(req):
         message = MessageForm(req.POST or None)
         if coupon.is_valid():
             if coupon.cleaned_data.get('code'):
-                try:
+                if order.coupon:
                     if order.coupon.code == coupon.cleaned_data['code']:
                         messages.warning(req, "You allready added this coupon ")
                         return redirect("cart")
-                except:
-                    pass
-                try:
-                    coupon = Coupon.objects.get(code=coupon.cleaned_data['code'], expire_date__gte=timezone.now())
-                    if order:
-                        order.coupon = coupon
-                        order.save()
-                        messages.success(req, "Coupon added succesufly ")
-                    else:
-                        messages.warning(req, "You do not have an active order ")
-                except:
-                    messages.warning(req, "Coupon is None Valide or expired !")
-
+                else:
+                    try:
+                        coupon = Coupon.objects.get(code=coupon.cleaned_data['code'], expire_date__gte=timezone.now())
+                        if order:
+                            order.coupon = coupon
+                            order.save()
+                            messages.success(req, "Coupon added succesufly ")
+                        else:
+                            messages.warning(req, "You do not have an active order ")
+                    except:
+                        messages.warning(req, "Coupon is None Valid or expired !")
             else:
                 messages.warning(req, "Non Valid Coupon !")
         elif message.is_valid():
             if message.cleaned_data.get('message'):
                 try:
-                    order = Order.objects.get(user=req.user, ordered=False)
                     order.message = message.cleaned_data["message"]
                     order.save()
                 except:
                     messages.error(req, "Error getting your order")
                 messages.success(req, "Instructions added")
             return redirect("checkout")
-
+        elif not message.is_valid():
+            messages.warning(req, "Error getting the Message")
         else:
-            messages.warning(req, "Error getting the Coupon or Message")
+            messages.warning(req, "Error getting the Coupon ")
 
         return redirect("cart")
 
@@ -319,20 +322,26 @@ def add_to_cart(req, slug):
     return redirect("cart")
 
 
-def increment_item_card(req, id):
+def increment_item_card(req, id, red):
     item_card = OrderItem.objects.get(id=id)
     item_card.quantity += 1
     item_card.save()
-    return redirect("cart")
+    try:
+        return redirect(red, ref=item_card.order.ref_code)
+    except:
+        return redirect(red)
 
 
-def decrement_item_card(req, id):
+def decrement_item_card(req, id, red):
     item_card = OrderItem.objects.get(id=id)
     item_card.quantity -= 1
     item_card.save()
     if not item_card.quantity:
         remove_form_cart(req, id)
-    return redirect("cart")
+    try:
+        return redirect(red, ref=item_card.order.ref_code)
+    except:
+        return redirect(red)
 
 
 def contact(req):
@@ -379,6 +388,134 @@ def order_details(req, ref):
         return redirect("user-orders")
     context = {
         "order": order,
+    }
+    return render(req, "customer-order.html", context)
+
+
+@login_required
+def order_track(req, ref):
+    try:
+        order = Order.objects.get(ref_code=ref)
+    except:
+        messages.error(req, "Non valid reference code ")
+        return redirect("user-orders")
+    context = {
+        "order": order,
+    }
+    return render(req, "track-order.html", context)
+
+
+@login_required
+def order_cancel(req, ref):
+    try:
+        order = Order.objects.get(ref_code=ref)
+        order.order_status = "CANCELED"
+        order.save()
+    except:
+        messages.error(req, "Non valid reference code ")
+        return redirect("user-orders")
+    return redirect("user-orders")
+
+
+@login_required
+def order_reorder(req, ref):
+    try:
+        order = Order.objects.get(ref_code=ref)
+        new_one = Order.objects.create(
+            user=order.user,
+            ref_code=random_ref(),
+            message=order.message,
+            delivery_method=order.delivery_method,
+            payment_option=order.payment_option,
+            payment_method=order.payment_method,
+            coupon=order.coupon,
+            shipping_address=order.shipping_address,
+            billing_address=order.billing_address,
+        )
+        new_one.save()
+        for item in order.items.all():
+            new_item = item
+            new_item.pk = None
+            new_item.order = new_one
+            new_item.save()
+
+    except Exception as e:
+        print("exception", e)
+        messages.error(req, "Non valid order reference")
+    return redirect("checkout")
+
+
+@login_required
+def order_modify(req, ref):
+    try:
+        order = Order.objects.get(ref_code=ref)
+    except Exception as e:
+        print("exception", e)
+        messages.error(req, "Non valid reference code ")
+        return redirect("user-orders")
+    if not order.order_status == "ON HOLD":
+        messages.error(req, "Can't modify this order ")
+        return redirect("user-orders")
+    if req.method == "POST":
+        if req.POST.get('action') == "deletemessage":
+            order.message = None
+            order.save()
+            messages.success(req, "Message deleted")
+            redirect("order-modify", ref=order.ref_code)
+        if req.POST.get('action') == "deletecoupon":
+            order.coupon = None
+            order.save()
+            messages.success(req, "Coupon deleted")
+            redirect("order-modify", ref=order.ref_code)
+        if req.POST.get('action') == "changeaddress":
+            try:
+                addresse = Address.objects.get(id=req.POST.get('address_id'))
+                order.shipping_address = addresse
+                order.save()
+                messages.success(req, "Address Updated")
+            except Exception as e:
+                print("exception", e)
+                messages.error(req, "Non valid address")
+        coupon = CouponForm(req.POST or None)
+        message = MessageForm(req.POST or None)
+        if coupon.is_valid():
+            if coupon.cleaned_data.get('code'):
+                if order.coupon:
+                    if order.coupon.code == coupon.cleaned_data['code']:
+                        messages.warning(req, "You already added this coupon ")
+                else:
+                    try:
+                        coupon = Coupon.objects.get(code=coupon.cleaned_data['code'], expire_date__gte=timezone.now())
+                        if order:
+                            order.coupon = coupon
+                            order.save()
+                            messages.success(req, "Coupon added successfully ")
+                        else:
+                            messages.warning(req, "You do not have an active order ")
+                    except Exception as e:
+                        print("exception", e)
+                        messages.warning(req, "Coupon is None Valid or expired !")
+
+            else:
+                messages.warning(req, "Non Valid Coupon !")
+        elif message.is_valid():
+            if message.cleaned_data.get('message'):
+                try:
+                    order.message = message.cleaned_data["message"]
+                    order.save()
+                except Exception as e:
+                    print("exception", e)
+                    messages.error(req, "Error getting your order")
+                messages.success(req, "Instructions added")
+        elif not message.is_valid():
+            messages.warning(req, "Error getting the Message")
+        else:
+            messages.warning(req, "Error getting the Coupon")
+    context = {
+        "modify": True,
+        "order": order,
+        "coupon": CouponForm(),
+        "message": MessageForm(initial={"message": order.message})
     }
     return render(req, "customer-order.html", context)
 
@@ -469,7 +606,8 @@ def addresses(req):
             if id:
                 try:
                     address = Address.objects.get(id=id)
-                except:
+                except Exception as e:
+                    print("exception", e)
                     messages.error(req, "Non valid Address")
                     return redirect("user-addresses")
                 if action == "updated":
@@ -493,7 +631,8 @@ def addresses(req):
                         def_address = req.user.addresses.filter(default=True)[0]
                         def_address.default = False
                         def_address.save()
-                    except:
+                    except Exception as e:
+                        print("exception", e)
                         pass
                     address.default = True
                     address.save()
@@ -512,27 +651,36 @@ def addresses(req):
 @login_required
 def checkout(req):
     try:
-        order = Order.objects.get(user=req.user, ordered=False)
-    except:
+        order = Order.objects.filter(user=req.user, ordered=False)[0]
+    except Exception as e:
+        print("exception", e)
         messages.error(req, "Non Valid order")
         return redirect("home")
-    try:
-        form = AddressForm(instance=order.shipping_address)
-    except:
-        form = AddressForm()
+    form = AddressForm()
     if req.method == "POST":
-        form = AddressForm(req.POST or None)
-        if form.is_valid():
-            address = Address(**form.cleaned_data)
-            address.user = req.user
-            address.save()
-            order.shipping_address = address
-            order.billing_address = address
+        if req.POST.get('action') == "choseanaddress":
+            try:
+                addresse = Address.objects.get(id=req.POST.get('address_id'))
+            except Exception as e:
+                print("exception", e)
+                messages.error(req, "Non valid address")
+            order.shipping_address = addresse
             order.save()
-            messages.success(req, "Address Saved")
+            messages.success(req, "Address Added")
             return redirect("delivery")
         else:
-            messages.error(req, "Errors in Form")
+            form = AddressForm(req.POST or None)
+            if form.is_valid():
+                address = Address(**form.cleaned_data)
+                address.user = req.user
+                address.save()
+                order.shipping_address = address
+                order.billing_address = address
+                order.save()
+                messages.success(req, "Address Saved")
+                return redirect("delivery")
+            else:
+                messages.error(req, "Errors in Form")
 
     context = {
         "form": form,
@@ -547,27 +695,71 @@ def delivery(req):
         if not order.shipping_address:
             messages.error(req, "You Need a shipping address")
             return redirect("address")
-    except:
+    except Exception as e:
+        print("exception", e)
         messages.error(req, "Non Valid order")
         return redirect("home")
-
     if req.method == "POST":
         try:
-            method = DeliveryMethod.objects.get(id=req.POST['option_id'])
+            method = DeliveryMethod.objects.get(id=req.POST.get('option_id', None))
             order.delivery_method = method
             order.save()
             return redirect("payment")
-        except:
-            messages.error(req, "Non Valide Method")
+        except Exception as e:
+            print("exception", e)
+            messages.error(req, "Non Valid Method")
 
     user_method = order.delivery_method
     if user_method:
         methods = DeliveryMethod.objects.exclude(id=user_method.id)
     else:
         methods = DeliveryMethod.objects.all()
+
     context = {
         "methods": methods,
-        "user_method": user_method
+        "user_method": user_method,
+    }
+    return render(req, "checkout2.html", context)
+
+
+@login_required
+def update_delivery(req, ref):
+    try:
+        order = Order.objects.get(ref_code=ref)
+    except Exception as e:
+        print("exception", e)
+        messages.error(req, "Non Valid order")
+        return redirect("home")
+    if req.method == "POST":
+        try:
+            method = DeliveryMethod.objects.get(id=req.POST.get('option_id', None))
+            print("method", method)
+            order.delivery_method = method
+            order.save()
+            print("all ", method.payment_options.all())
+            print("current ", order.payment_option)
+            if order.payment_option not in method.payment_options.all():
+                order.payment_option = None
+                order.payment_method = None
+                order.save()
+                return redirect("update-payment", ref=ref)
+            return redirect("order-modify", ref=ref)
+        except Exception as e:
+            print("error ", e)
+            messages.error(req, "Non Valid Method")
+    else:
+        redirect("user-orders")
+
+    user_method = order.delivery_method
+    if user_method:
+        methods = DeliveryMethod.objects.exclude(id=user_method.id)
+    else:
+        methods = DeliveryMethod.objects.all()
+
+    context = {
+        "methods": methods,
+        "user_method": user_method,
+        "change": True
     }
     return render(req, "checkout2.html", context)
 
@@ -583,7 +775,8 @@ def payment(req):
         if not order.delivery_method:
             messages.error(req, "You Need a delivery method")
             return redirect("delivery")
-    except:
+    except Exception as e:
+        print("exception", e)
         messages.error(req, "Non Valid order !")
         return redirect("home")
 
@@ -595,7 +788,8 @@ def payment(req):
                 order.save()
                 payment_methods = payment_option.payment_methods.all()
                 return render(req, "checkout3.html", {"payment_methods": payment_methods})
-            except:
+            except Exception as e:
+                print("exception", e)
                 messages.error(req, "Non Valid option")
         elif req.POST.get('e2option_id'):
             try:
@@ -603,7 +797,8 @@ def payment(req):
                 order.payment_method = payment_method
                 order.save()
                 return redirect("overview")
-            except:
+            except Exception as e:
+                print("exception", e)
                 messages.error(req, "Non Valid payment option")
 
     payment_option = order.payment_option
@@ -629,6 +824,60 @@ def payment(req):
 
 
 @login_required
+def update_payment(req, ref):
+    payment_methods = None
+    try:
+        order = Order.objects.get(ref_code=ref)
+    except Exception as e:
+        print("exception", e)
+        messages.error(req, "Non Valid order")
+        return redirect("home")
+
+    if req.method == "POST":
+        if req.POST.get('option_id'):
+            try:
+                payment_option = PaymentOptions.objects.get(id=req.POST['option_id'])
+                order.payment_option = payment_option
+                order.save()
+                payment_methods = payment_option.payment_methods.all()
+                return render(req, "checkout3.html", {"payment_methods": payment_methods, "change": True})
+            except Exception as e:
+                print("exception", e)
+                messages.error(req, "Non Valid option")
+        elif req.POST.get('e2option_id'):
+            try:
+                payment_method = PaymentMethod.objects.get(id=req.POST['e2option_id'])
+                order.payment_method = payment_method
+                order.save()
+                return redirect("order-modify", ref=ref)
+            except Exception as e:
+                print("exception", e)
+                messages.error(req, "Non Valid payment option")
+
+    payment_option = order.payment_option
+
+    if payment_option:
+        add = False
+        for v in order.delivery_method.payment_options.all():
+            if v.id == payment_option.id:
+                add = True
+        if not add:
+            payment_option = None
+
+    if payment_option:
+        payment_options = order.delivery_method.payment_options.exclude(id=payment_option.id)
+    else:
+        payment_options = order.delivery_method.payment_options.all()
+
+    context = {
+        "payment_options": payment_options,
+        "payment_option": payment_option,
+        "change": True
+    }
+    return render(req, "checkout3.html", context)
+
+
+@login_required
 def overview(req):
     try:
         order = Order.objects.get(user=req.user, ordered=False)
@@ -641,8 +890,9 @@ def overview(req):
         if not order.payment_option or not order.payment_method:
             messages.error(req, "You Need payment options")
             return redirect("payment")
-    except:
-        messages.error(req, "Non Valid order !")
+    except Exception as e:
+        print("exception", e)
+        messages.error(req, "The card is empty !")
         return redirect("home")
 
     context = {
@@ -664,7 +914,8 @@ def confirmation(req):
         if not order.payment_option or not order.payment_method:
             messages.error(req, "You Need payment options")
             return redirect("payment")
-    except:
+    except Exception as e:
+        print("exception", e)
         messages.error(req, "Non Valid order !")
         return redirect("home")
     try:
@@ -672,7 +923,8 @@ def confirmation(req):
         order.ordered_date = timezone.now()
         order.order_status = "ON HOLD"
         order.save()
-    except:
+    except Exception as e:
+        print("exception", e)
         messages.error(req, "Error while saving your order")
         return redirect("overview")
     context = {
@@ -690,3 +942,9 @@ def newsletter(req):
         else:
             messages.error(req, form.errors)
     return redirect(req.POST.get("next", 'home'))
+
+
+@staff_member_required
+def dashboard(req):
+    messages.success(req,"dashboard")
+    return render(req, "index.html", {})

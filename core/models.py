@@ -167,8 +167,8 @@ class Product(BaseModel):
             'slug': self.slug
         })
 
-    def remove_form_cart(self):
-        return reverse("product-details", kwargs={"slug": self.slug})
+    # def remove_form_cart(self):
+    #     return reverse("product-details", kwargs={"slug": self.slug})
 
     def get_primary_image(self):
         for image in self.product_images.all():
@@ -259,13 +259,22 @@ class OrderItem(BaseModel):
         return self.quantity * self.get_total_price()
 
     def remove_form_cart(self):
-        return reverse("remove_form_cart", kwargs={"id": self.id})
+        return reverse("remove_form_cart", kwargs={"id": self.id, "red": "cart"})
+
+    def remove_form_modify(self):
+        return reverse("remove_form_cart", kwargs={"id": self.id, "red": "user-orders"})
 
     def increment_item_card(self):
-        return reverse("increment_item_card", kwargs={"id": self.id})
+        return reverse("increment_item_card", kwargs={"id": self.id, "red": "cart"})
 
     def decrement_item_card(self):
-        return reverse("decrement_item_card", kwargs={"id": self.id})
+        return reverse("decrement_item_card", kwargs={"id": self.id, "red": "cart"})
+
+    def increment_item_modify(self):
+        return reverse("increment_item_card", kwargs={"id": self.id, "red": "order-modify"})
+
+    def decrement_item_modify(self):
+        return reverse("decrement_item_card", kwargs={"id": self.id, "red": "order-modify"})
 
 
 class Order(BaseModel):
@@ -294,6 +303,9 @@ class Order(BaseModel):
         'Coupon', on_delete=models.SET_NULL, blank=True, null=True)
     shipping_address = models.ForeignKey("Address", on_delete=models.SET_NULL, null=True)
     billing_address = models.ForeignKey("Address", related_name="OrdersBailing", on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+            ordering = ('-pk',)
 
     def __str__(self):
         return f"{self.ref_code} by {self.user} is ordered :{self.ordered}"
@@ -330,9 +342,9 @@ class Order(BaseModel):
 
     def get_product_actions(self):
         if self.order_status == "ON HOLD":
-            return ["modify", "cancel"]
+            return ["re-order", "modify", "cancel"]
         elif self.order_status == "PROCESSING":
-            return ["modify", "cancel"]
+            return ["re-order", "cancel"]
         elif self.order_status == "COMPLETED":
             return ["track", "re-order", "cancel"]
         elif self.order_status == "CANCELED":
@@ -377,7 +389,7 @@ class Address(models.Model):
     default = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.full_name} - {self.city}"
+        return f"{self.full_name} - {self.street_address} - {self.city}"
 
     class Meta:
         verbose_name_plural = 'Addresses'
@@ -430,14 +442,14 @@ class NewsLetter(BaseModel):
 
 class UserProfile(BaseModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='user_profile', on_delete=models.CASCADE,
-                            )
+                                )
     gender = models.CharField(
         max_length=8,
         choices=GENDER_CHOICES,
     )
     telephone = models.CharField(max_length=10)
     profile_picture = models.OneToOneField(Image, on_delete=models.SET_NULL, blank=True, null=True)
-    address = models.ForeignKey(Address, related_name="user_profile", on_delete=models.SET_NULL, null=True,blank=True)
+    address = models.ForeignKey(Address, related_name="user_profile", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"

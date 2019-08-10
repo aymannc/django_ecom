@@ -21,20 +21,23 @@ from core.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('dashboard/', dashboard, name="dashboard"),
     path('', include('allauth.urls')),
 
     path('', home, name="home"),
     path('contact/', contact, name="contact"),
-    # TODO : make the actions available and change the checkout process
     path('orders/', orders, name="user-orders"),
     path('orders-details/<slug:ref>', order_details, name="order-details"),
-    path('order-modify/<slug:ref>', order_details, name="order-modify"),
-    path('order-cancel/<slug:ref>', order_details, name="order-cancel"),
-    path('order-track/<slug:ref>', order_details, name="order-track"),
+    path('order-modify/<slug:ref>', order_modify, name="order-modify"),
+    path('order-cancel/<slug:ref>', order_cancel, name="order-cancel"),
+    path('order-reorder/<slug:ref>', order_reorder, name="order-reorder"),
+    path('order-track/<slug:ref>', order_track, name="order-track"),
 
     path('checkout/', checkout, name="checkout"),
     path('delivery/', delivery, name="delivery"),
+    path('update-delivery/<slug:ref>', update_delivery, name="update-delivery"),
     path('payment/', payment, name="payment"),
+    path('update-payment/<slug:ref>', update_payment, name="update-payment"),
     path('overview/', overview, name="overview"),
     path('confirmation/', confirmation, name="confirmation"),
 
@@ -46,9 +49,9 @@ urlpatterns = [
 
     path('cart/', cart_view, name="cart"),
     path('addtocart/<slug:slug>', add_to_cart, name="add-to-cart"),
-    path('removeformcart/<int:id>', remove_form_cart, name="remove_form_cart"),
-    path('increment_item_card/<int:id>', increment_item_card, name="increment_item_card"),
-    path('decrement_item_card/<int:id>', decrement_item_card, name="decrement_item_card"),
+    path('removeformcart/<int:id>/<str:red>', remove_form_cart, name="remove_form_cart"),
+    path('increment_item_card/<int:id>/<str:red>', increment_item_card, name="increment_item_card"),
+    path('decrement_item_card/<int:id>/<str:red>', decrement_item_card, name="decrement_item_card"),
 
     path('shop/', shop, name="shop"),
     path('shop/<slug:slug>', shop_by_category, name="shop_by_category"),

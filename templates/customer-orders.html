@@ -31,7 +31,7 @@
                             <th>Date</th>
                             <th>Total</th>
                             <th>Status</th>
-                            <th class="text-center" colspan="2">Actions</th>
+                            <th class="text-center" colspan="3">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -54,11 +54,11 @@
                                         <td><a href="{% url "order-cancel"  ref=order.ref_code %}"
                                                class="btn btn-danger btn-sm">Cancel</a></td>
                                     {% elif  action == "track" %}
-                                        <td><a href="{% url "Order reference"  ref=order.ref_code %}"
+                                        <td><a href="{% url "order-track"  ref=order.ref_code %}"
                                                class="btn btn-success btn-sm">Track</a></td>
                                     {% elif  action == "re-order" %}
                                         <td><a href="{% url "order-reorder"  ref=order.ref_code %}"
-                                               class="btn btn-secondary btn-sm">Reorder</a></td>
+                                               class="btn btn-primary btn-sm">Reorder</a></td>
                                     {% endif %}
                                 {% endfor %}
                             </tr>
