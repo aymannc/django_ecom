@@ -21,7 +21,7 @@ from core.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('dashboard/', dashboard, name="dashboard"),
+    path('dashboard/', include('dashboard.urls')),
     path('', include('allauth.urls')),
 
     path('', home, name="home"),
@@ -43,9 +43,8 @@ urlpatterns = [
 
     path('profile/', profile, name="user-profile"),
     path('addresses/', addresses, name="user-addresses"),
-    path('blog/', blog, name="blog"),
-    path('conditions-vente/', blog, name="conditions_vente"),
-    path('conditions-annulation/', blog, name="conditions_annulation"),
+    path('conditions-vente/', addresses, name="conditions_vente"),
+    path('conditions-annulation/', addresses, name="conditions_annulation"),
 
     path('cart/', cart_view, name="cart"),
     path('addtocart/<slug:slug>', add_to_cart, name="add-to-cart"),

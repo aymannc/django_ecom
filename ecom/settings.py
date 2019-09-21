@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'livereload',
     'core',
+    'dashboard',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

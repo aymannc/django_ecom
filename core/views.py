@@ -1,17 +1,17 @@
 import random
-import string
 from urllib.parse import quote_plus
-from django.db.models import FieldDoesNotExist, Q
-from django.forms.models import model_to_dict
+
+from allauth.account.forms import ChangePasswordForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import FieldDoesNotExist, Q
+from django.forms.models import model_to_dict
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+
 from .forms import *
 from .models import *
-from allauth.account.forms import ChangePasswordForm
 
 
 def random_ref():
@@ -358,14 +358,6 @@ def contact(req):
         "form": form
     }
     return render(req, "contact.html", context)
-
-
-def blog(req):
-    return render(req, "blog.html", {})
-
-
-def login(req):
-    return render(req, "customer-login.html", {})
 
 
 @login_required
@@ -944,7 +936,3 @@ def newsletter(req):
     return redirect(req.POST.get("next", 'home'))
 
 
-@staff_member_required
-def dashboard(req):
-    messages.success(req,"dashboard")
-    return render(req, "index.html", {})

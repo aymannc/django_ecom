@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% include "dashboard/head.html" %}
+<body id="page-top">
+<div id="wrapper">
+    {% include 'dashboard/sidebar.html' %}
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            {% include 'dashboard/topbar.html' %}
+            <div class="container-fluid">
+                {% block content %}
+                    Stuff goes here
+                {% endblock content %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            <div id="snackbar" style="background-color: #28a745;">{{ message }}</div>
+        {% elif message.tags == 'info' %}
+            <div id="snackbar" style="background-color: #42a5f5;">{{ message }}</div>
+        {% elif message.tags == 'warning' %}
+            <div id="snackbar" style="background-color: #ffc107;">{{ message }}</div>
+        {% elif message.tags == 'error' %}
+            <div id="snackbar" style="background-color: #dc3545;">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+</body>
+{% include "dashboard/script.html" %}
+</html>
