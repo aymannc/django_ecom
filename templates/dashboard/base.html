@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
 {% include "dashboard/head.html" %}
+<style>
+    table.dataTable {
+        border-collapse: collapse !important;
+    }
+</style>
 <body id="page-top">
 <div id="wrapper">
     {% include 'dashboard/sidebar.html' %}
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             {% include 'dashboard/topbar.html' %}
-            <div class="container-fluid">
-                {% block content %}
-                    Stuff goes here
-                {% endblock content %}
-            </div>
+            {% block content %}
+                Stuff goes here
+            {% endblock content %}
         </div>
     </div>
 </div>

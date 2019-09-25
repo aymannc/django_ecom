@@ -1,0 +1,351 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+    <div class="container mx-auto">
+        <section style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+            <div class="container">
+                <div class="row d-flex">
+                    <div class="col-lg-9 order-2 order-lg-1">
+                        <h2>Référence : <span class="text-info">{{ order.ref_code }}</span></h2>
+                        <p class="lead">La commande a été passée le <span
+                                class="text-success">{{ order.ordered_date|date:"d/m/Y" }}</span>
+                            et il est actuellement <span
+                                    class="text-{{ order.get_tag_type }}">{{ order.get_order_status_display }}</span>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="padding-small">
+            <div class="container">
+                <table class="table  mb-4">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="table-light text-center" colspan="2">PRODUIT</th>
+                        <th scope="col" class="text-center table-light">PRIX</th>
+                        <th scope="col" class="text-center table-light">QUANTITÉ</th>
+                        <th scope="col" class="pl-4 table-light" colspan="2">TOTAL</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for order_item in order.items.all %}
+                        {% with order_item.product as product %}
+                            <tr>
+                                <th scope="row" colspan="2" class="table-light">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            {% with product.get_primary_image as image %}
+                                                <img src="{{ image.get_absolute_url }}"
+                                                     alt="{{ image.alt }}" width="80px" class="img-fluid">
+                                            {% endwith %}
+                                        </div>
+                                        <div class="col-9">
+                                            <a href="{{ product.get_absolute_url }}">
+                                                <h5>{{ product.product_name }}</h5>
+
+                                            </a>
+                                            {% for option in order_item.additional_options.all %}
+                                                <span class="text-muted">{{ option.value }} [+ {{ option.price }}DH ]</span>
+                                                <br>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </th>
+                                <td class="pt-4 text-center table-light">{{ order_item.get_total_price }}</td>
+                                <td class="pt-4 text-center table-light">
+                                    <div class="col align-items-center text-center ">
+                                        {% if modify %}
+                                            <a href="{{ order_item.decrement_item_dashboard }}">
+                                                <div class="btn btn-sm btn-primary mr-2">-</div>
+                                            </a>
+                                        {% endif %}
+                                        <span class="">{{ order_item.quantity }}</span>
+                                        {% if modify %}
+                                            <a href="{{ order_item.increment_item_dashboard }}">
+                                                <div class="btn btn-sm btn-primary ml-2">+</div>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="pt-4 table-light">{{ order_item.get_subtotal }}</td>
+                                {% if modify %}
+                                    <td class="pt-4 table-light">
+                                        <div class="col-1 text-center">
+                                            <a href="{{ order_item.remove_form_dashboard }}">
+                                                <i class="delete fa fa-trash text-danger"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endwith %}
+                    {% endfor %}
+                    <tr class="text-center">
+                        <th scope="row" colspan="2" class="table-light"></th>
+                        <td colspan="2" class="table-light"><strong>Sous total</strong></td>
+                        <td colspan="2" class="table-light">
+                            <strong class="text-primary">{{ order.get_total }}DH</strong>
+                        </td>
+                    </tr>
+                    <tr class="text-center">
+                        <th scope="row" colspan="2" class="table-light"></th>
+                        <td colspan="2" class="table-light"><strong>Livraison</strong></td>
+                        <td colspan="2" class="table-light">
+                            <strong>{{ order.delivery_method.shipping_price }}DH</strong>
+                        </td>
+                    </tr>
+                    <tr class="text-center">
+                        <th scope="row" colspan="2" class="table-light"></th>
+                        <td colspan="2" class="table-light"><strong>Code Promo</strong></td>
+                        <td colspan="2" class="table-light">
+                            <strong class="text-success" class="table-light">-{% if order.coupon %}
+                                {{ order.coupon.amount }}{% else %}0{% endif %}DH</strong>
+                        </td>
+                    </tr>
+                    <tr class="text-center">
+                        <th scope="row" colspan="2" class="table-light"></th>
+                        <td colspan="2" class="table-light"><strong>Total</strong></td>
+                        <td colspan="2" class="table-light">
+                            <strong class="text-primary">{{ order.get_total_coupon }}DH</strong>
+                        </td>
+                    </tr>
+
+                    <tr class="text-center">
+                        <th scope="row" colspan="2"></th>
+                        <td colspan="2"></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-xl-10 mx-auto">
+                        {% if not order.shipping_address %}
+                            <div class="alert alert-danger" role="alert">
+                                Adresse de livraison non valide ou non spécifiée
+                            </div>
+                        {% endif %}
+                        {% if not order.delivery_method %}
+                            <div class="alert alert-danger" role="alert">
+                                Méthode de livraison non valide ou non spécifiée
+                            </div>
+                        {% endif %}
+                        {% if not order.payment_option %}
+                            <div class="alert alert-danger" role="alert">
+                                Modalité de paiement non valide ou non spécifiée
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col float-right">
+                                {% if modify %}
+                                {% else %}
+                                    <div class="row">
+                                        <div class="col">
+                                            <a href="{% url "order-modify"  ref=order.ref_code %}"
+                                               class="btn btn-info float-right mb-3"><span
+                                                    class=" text-white">Modify this order</span></a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mx-auto">
+                            <div class="col-lg-6 mb-4">
+                                <div class="card shadow mb-4 text-center h-100">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary ">CODE PROMO</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if order.coupon %}
+                                            <span class="text-info mb-2">Current Code : "{{ order.coupon.code }}"</span> {% else %}
+                                            <span class="text-info mb-2">You don't have a coupon</span> {% endif %}
+                                        {% if modify %}
+                                            <form method="post" id="updatecouponform">
+                                                <div class="form-group d-flex">
+                                                    {% csrf_token %} {{ coupon }}
+                                                </div>
+
+                                            </form>
+                                            {% if order.coupon %}
+                                                <form method="post" id="deletecoupon">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                                                </form>
+                                            {% endif %}
+                                            <button type="submit" name="action" value="updatecoupon"
+                                                    form="updatecouponform" class=" btn btn-info">Mettre à jour
+                                            </button>
+
+                                            {% if order.coupon %}
+                                                <button type="submit" name="action" value="deletecoupon"
+                                                        form="deletecoupon" class="btn btn-danger">Supprimer
+                                                </button>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <div class="card shadow mb-4 text-center h-100">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary ">Message</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if modify %}
+                                            <form method="POST" id="updateform">
+                                                {% if order.message %}
+                                                    <span class="text-info mb-2">Current :</span> {% endif %} {% csrf_token %} {{ message.as_p }}
+                                            </form>
+                                            <button type="submit" name="action" value="updatemessage" form="updateform"
+                                                    class="btn btn-info">Mettre à jour
+                                            </button>
+                                            {% if order.message %}
+                                                <form method="post" id="deleteform">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                                                </form>
+                                                <button type="submit" class="btn btn-danger" name="action"
+                                                        value="deletemessage"
+                                                        form="deleteform">Supprimer
+                                                </button>
+                                            {% endif %} {% else %} {% if order.message %}
+                                            <span class="text-info mb-2">Current :</span>
+                                            <p>
+                                                {{ order.message }}
+                                            </p>
+                                        {% else %}
+                                            <span class="text-info mb-2">You don't have a message</span>
+                                        {% endif %} {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <div class="card shadow mb-4 text-center h-100">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary ">Adresse de livraison</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% with order.shipping_address as address %}
+                                            <p>{{ address.full_name }}
+                                                <br> {{ address.phone_number }}
+                                                <br> {{ address.street_address }} {{ address.apartment_address }}
+                                                <br> {{ address.city }}, {{ address.state }}
+                                                <br> {{ address.zip }}, {{ address.country }}
+                                                <br>
+
+                                            </p>
+                                        {% endwith %}
+                                        {% if modify %}
+                                            <div class="form-group col-12 mt-3 ml-3">
+                                                <button class="btn btn-info pb-0">
+                                                    <label for="another-address" data-toggle="collapse"
+                                                           data-target="#shippingAddress" aria-expanded="false"
+                                                           aria-controls="shippingAddress" class="collapsed text-white">Modifier</label>
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% if modify %}
+                                <div id="shippingAddress" aria-expanded="false" class="col-lg-12 collapse" style="">
+                                    <div class="card shadow mb-4 text-center">
+                                        <div class="card-header py-3">
+                                            <h6 class="m-0 font-weight-bold text-primary ">Mdifier l'adresse de
+                                                livraison</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row mt-4">
+                                                <div class="col text-center">
+                                                    <h6 class="text-uppercase">UTILISER L'UN PARMI LES ADRESSES
+                                                        D'UTILISATEURS : </h6>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4 mt-2">
+                                                <div class="col-md-8 my-2 mx-auto">
+                                                    <form method="post" id="useaddressform">
+                                                        {% csrf_token %}
+                                                        <select name="address_id" class=" form-control bs-select ">
+                                                            {% for address in request.user.addresses.all %}
+                                                                <option value="{{ address.id }}">
+                                                                    {{ address }}
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </form>
+                                                </div>
+                                                <div class="col-2 mt-2">
+                                                    <button type="submit" name="action" value="changeaddress"
+                                                            form="useaddressform" class="btn btn-primary text-white">
+                                                        Utiliser
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-5 mt-2 text-center">
+                                                <div class="col">
+                                                    {#                                            <a href="{% url " user-addresses " %}#addressform"#}
+                                                    <a href="#addressform"
+                                                       class="btn btn-info text-white" va>Ajouter une nouvelle
+                                                        adresse</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="col-lg-6 mb-4">
+                                <div class="card shadow mb-4 text-center h-100">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary ">Mode de livraison</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p> {% if order.delivery_method.icon %}
+                                            <img src="{{ order.delivery_method.icon.get_absolute_url }}"
+                                                 alt="{{ order.delivery_method.icon.alt }}" width="50px"><br>
+                                        {% endif %}
+                                            {{ order.delivery_method.name }}<br>
+                                            {{ order.delivery_method.description }}<br>
+                                            {{ order.delivery_method.shipping_price }} DH<br>
+
+                                        </p>
+                                        {% if modify %}
+                                            <a class="btn btn-info text-white"
+                                               href="{% url "update-delivery" ref=order.ref_code %}">Modifier</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <div class="card shadow mb-4 text-center h-100">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary ">Paiement</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if order.payment_option %}
+                                            <p><strong class="text-primary"> modalité de
+                                                paiement: </strong><br>{{ order.payment_option.name }}<br>
+                                                {{ order.payment_option.description }}<br>
+                                                <strong class="text-primary">méthode de paiement:</strong><br>
+                                                {{ order.payment_method.description }}<br>
+
+                                            </p>
+                                            {% if modify %}
+                                                <a class="btn btn-info text-white"
+                                                   href="{% url "update-payment" ref=order.ref_code %}">Modifier</a>
+                                            {% endif %}
+                                        {% else %}
+                                            <p><strong class="text-danger">
+                                                You need to specify the payment details or your order might be
+                                                canceled</strong>
+                                            </p>
+                                            <a class="btn btn-info text-white"
+                                               href="{% url "update-payment" ref=order.ref_code %}">Add</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

@@ -147,11 +147,13 @@ def not_found(req):
 
 
 def remove_form_cart(req, id, red):
-    order_item = OrderItem.objects.get(id=id)
+    try:
+        order_item = OrderItem.objects.get(id=id)
+    except:
+        return redirect("user-orders")
     order = Order.objects.get(id=order_item.order.id)
     order_item.delete()
     count = order.items.count()
-
     if not count:
         try:
             if order.id == req.session['cart']:
@@ -160,14 +162,15 @@ def remove_form_cart(req, id, red):
         except:
             pass
         if not order.ordered:
-            messages.success(req, "Card is Empty ")
+            messages.success(req, "Non valide commande ")
             order.delete()
-            return redirect("home")
+            return redirect("db:commandes")
         else:
             order.delete()
 
     messages.success(req, "Item deleted successfully")
-    return redirect(red)
+    print("this shit ", red + " " + order.ref_code)
+    return redirect(red, ref=order.ref_code)
 
 
 def cart_view(req):
@@ -334,12 +337,13 @@ def increment_item_card(req, id, red):
 
 def decrement_item_card(req, id, red):
     item_card = OrderItem.objects.get(id=id)
+    ref_code = item_card.order.ref_code
     item_card.quantity -= 1
     item_card.save()
     if not item_card.quantity:
-        remove_form_cart(req, id)
+        remove_form_cart(req, id, red)
     try:
-        return redirect(red, ref=item_card.order.ref_code)
+        return redirect(red, ref=ref_code)
     except:
         return redirect(red)
 
@@ -934,5 +938,3 @@ def newsletter(req):
         else:
             messages.error(req, form.errors)
     return redirect(req.POST.get("next", 'home'))
-
-

@@ -3,7 +3,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'dashboard' %}">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'db:dashboard' %}">
         <img
                 src="{% static 'img/foxlogoW1.png' %}" alt="site logo" width="100%">
     </a>
@@ -13,7 +13,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="{% url "dashboard" %}">
+        <a class="nav-link" href="{% url "db:dashboard" %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Tableau de bord</span></a>
     </li>
@@ -28,7 +28,7 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{% url "db:commandes" %}">
             <i class="fas fa-fw fa-archive"></i>
             <span>Commandes </span></a>
     </li>

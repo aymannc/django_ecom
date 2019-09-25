@@ -262,7 +262,10 @@ class OrderItem(BaseModel):
         return reverse("remove_form_cart", kwargs={"id": self.id, "red": "cart"})
 
     def remove_form_modify(self):
-        return reverse("remove_form_cart", kwargs={"id": self.id, "red": "user-orders"})
+        return reverse("remove_form_cart", kwargs={"id": self.id, "red": "order-details"})
+
+    def remove_form_dashboard(self):
+        return reverse("remove_form_cart", kwargs={"id": self.id, "red": "db:order-details"})
 
     def increment_item_card(self):
         return reverse("increment_item_card", kwargs={"id": self.id, "red": "cart"})
@@ -275,6 +278,12 @@ class OrderItem(BaseModel):
 
     def decrement_item_modify(self):
         return reverse("decrement_item_card", kwargs={"id": self.id, "red": "order-modify"})
+
+    def increment_item_dashboard(self):
+        return reverse("increment_item_card", kwargs={"id": self.id, "red": "db:order-details"})
+
+    def decrement_item_dashboard(self):
+        return reverse("decrement_item_card", kwargs={"id": self.id, "red": "db:order-details"})
 
 
 class Order(BaseModel):
@@ -305,7 +314,7 @@ class Order(BaseModel):
     billing_address = models.ForeignKey("Address", related_name="OrdersBailing", on_delete=models.SET_NULL, null=True)
 
     class Meta:
-            ordering = ('-pk',)
+        ordering = ('-pk',)
 
     def __str__(self):
         return f"{self.ref_code} by {self.user} is ordered :{self.ordered}"
@@ -346,7 +355,7 @@ class Order(BaseModel):
         elif self.order_status == "PROCESSING":
             return ["re-order", "cancel"]
         elif self.order_status == "COMPLETED":
-            return ["track", "re-order", "cancel"]
+            return ["track", "re-order"]
         elif self.order_status == "CANCELED":
             return ["re-order"]
         elif self.order_status == "FAILED":

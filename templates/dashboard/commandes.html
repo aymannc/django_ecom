@@ -1,0 +1,62 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+    <div class="container my-4">
+        <div class="row mb-3">
+            <h2>Commandes</h2>
+        </div>
+
+        <table id="example" class="table text-center table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Utilisateur</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Statut</th>
+                <th>mettre à jour</th>
+                <th>Modifier</th>
+                <th>Supprimer</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>
+                        <a href="{% url "db:order-details"  ref=order.ref_code %}">{{ order.ref_code }}</a>
+                    </td>
+                    <td>{{ order.user.get_full_name }}</td>
+                    <td>{{ order.ordered_date|date:"d/m/Y" }}</td>
+                    <td>{{ order.get_total_coupon }}DH</td>
+                    <td>
+                        <span class="badge badge-{{ order.get_tag_type }} text-white">{{ order.get_order_status_display }}</span>
+                    </td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="ref" value="{{ order.ref_code }}">
+                            <select class="browser-default custom-select" name="choice" onchange="this.form.submit()">
+                                <option selected>{{ order.get_order_status_display }}</option>
+                                {% for status in choices %}
+                                    {% if status == order.get_order_status_display %}
+                                    {% else %}
+                                        <option value="{{ status }}">{{ status }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="{% url "order-modify"  ref=order.ref_code %}"
+                           class="btn btn-warning btn-sm ">Modifier</a>
+                    </td>
+                    <td>
+                        <a href="{% url "order-modify"  ref=order.ref_code %}"
+                           class="btn btn-danger btn-sm ">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

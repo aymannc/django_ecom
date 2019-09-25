@@ -42,17 +42,11 @@
 <!-- Custom scripts for all pages-->
 <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-
-<!-- Page level plugins -->
-{#<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>#}
-
-<!-- Page level custom scripts -->
-{#<script src="{% static 'js/demo/chart-area-demo.js' %}"></script>#}
-{#<script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>#}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.13/js/dataTables.bootstrap4.min.js"></script>
 <script>
     window.onload = function () {
         myFunction();
-        func();
     };
 
     function myFunction() {
@@ -66,44 +60,65 @@
         }
     }
 
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juilet', 'Août', 'Septembre','October','Novembre', 'Décembre'],
-            datasets: [{
-                label: 'Valuers en DH',
-                borderColor: 'rgb(128,0,128)',
-                data: {{ sales_values }},
-                fill: false,
+    $(document).ready(function () {
+        $('#example').dataTable({
+            "order": [],
+            'columnDefs': [{
+                'targets': [5, 6, 7], /* column index */
+                'orderable': false, /* true or false */
             }]
-        },
-        options: {
-            responsive: true,
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Mois'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Valuers'
-                    }
-                }]
-            }
-        }
+        });
     });
+    $(".dropdown-menu li a").click(function () {
+        var selText = $(this).text();
+        $(this).parents('.btn-group').find('.dropdown-toggle').html(selText + ' <span class="caret"></span>');
+    });
+    {% if request.path == '/dashboard/' %}
+        try {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juilet', 'Août', 'Septembre', 'October', 'Novembre', 'Décembre'],
+                    datasets: [{
+                        label: 'Valuers en DH',
+                        borderColor: 'rgb(128,0,128)',
+                        data: {{ sales_values }},
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Mois'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Valuers'
+                            }
+                        }]
+                    }
+                }
+            });
+        } catch (e) {
+            console.log(e)
+        }
+    {% endif %}
+
+
 </script>
