@@ -412,7 +412,7 @@ class DeliveryMethod(BaseModel):
     payment_options = models.ManyToManyField("PaymentOptions", related_name="delivery_methods")
 
     def __str__(self):
-        return f"{self.name} - {self.shipping_price}"
+        return f"{self.name} - {self.shipping_price}DH"
 
 
 class PaymentOptions(BaseModel):

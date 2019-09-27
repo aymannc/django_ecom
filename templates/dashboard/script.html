@@ -47,6 +47,7 @@
 <script>
     window.onload = function () {
         myFunction();
+        func();
     };
 
     function myFunction() {
@@ -56,6 +57,14 @@
             setTimeout(function () {
                 x.className = x.className.replace("show", "");
             }, 3000);
+        } catch (err) {
+        }
+    }
+
+    function func() {
+        try {
+            document.getElementById("id_code").className = "form-control";
+            document.getElementById("id_message").className = "form-control";
         } catch (err) {
         }
     }
