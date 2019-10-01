@@ -1,0 +1,25 @@
+{% extends 'dashboard/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container mx-auto">
+        <div class="container my-4">
+            <div class="row mb-3">
+                <h2>Ajouter un Produit</h2>
+            </div>
+        </div>
+
+        <div class="col-6 mx-auto">
+            <form method="post">
+                {% csrf_token %}
+                {{ product_form|crispy }}
+                <div class="row">
+                    <div class="col-2 mx-auto">
+                        <button class="btn btn-success my-3" type="submit">Ajouter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+{% endblock %}

@@ -393,8 +393,7 @@
                                             </button>
                                         {% endif %}
                                         <div id="modaliteform" aria-expanded="false"
-                                             class="col-lg-12 collapse "
-                                                {#{% if not order.payment_method %}show{% endif %}"#}
+                                             class="col-lg-12 collapse {% if payment_methods %}show{% endif %}"
                                              style="">
                                             <div class="card-body pb-0 mt-2 mx-auto">
                                                 <div class="row ">
@@ -427,7 +426,7 @@
                                                 </div>
                                             </div>
 
-                                            {% if order.payment_option %}
+                                            {% if payment_methods %}
                                                 <div class="card-body mx-auto">
                                                     <div class="row">
                                                         <div class="col text-center">

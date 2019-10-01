@@ -33,10 +33,19 @@
             <span>Commandes </span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+           aria-controls="collapsePages">
             <i class="fas fa-fw fa-store"></i>
             <span>Produits</span>
         </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar"
+             style="">
+            <div class="bg-white py-2 collapse-inner rounded">
+                {#                <h6 class="collapse-header">Login Screens:</h6>#}
+                <a class="collapse-item" href="{% url "db:products" %}">List</a>
+                {#                <div class="collapse-divider"></div>#}
+            </div>
+        </div>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="#">

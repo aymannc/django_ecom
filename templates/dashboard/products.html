@@ -1,0 +1,81 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+    <div class="container my-4">
+        <div class="row mb-3">
+            <h2>Produits</h2>
+        </div>
+        <div class="row mb-3">
+            <div class="col float-right">
+                <a href="{% url "db:add_product" %}" class="btn  btn-success">Ajouter un produit</a>
+            </div>
+        </div>
+        <table id="example" class="table text-center table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Qauntité</th>
+                <th>Prix</th>
+                <th>visible</th>
+                <th>is_featured</th>
+                <th>product_categorie</th>
+                <th>Modifier</th>
+                <th>Supprimer</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for product in products %}
+
+                <tr>
+                    <td>
+                        <a href="{% url "db:product-details"  ref=product.slug %}">{{ product.product_name }}</a>
+                    </td>
+                    <td>{{ product.product_quantity_available }}</td>
+                    <td>{{ product.product_price }}DH</td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="ref" value="{{ product.slug }}">
+                            <select class="browser-default custom-select" name="visible" onchange="this.form.submit()">
+                                <option selected>{{ product.visible }}</option>
+                                {% if product.visible %}
+                                    <option value="0">False</option>
+                                {% else %}
+                                    <option value="1">True</option>
+                                {% endif %}
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="ref" value="{{ product.slug }}">
+                            <select class="browser-default custom-select" name="featured" onchange="this.form.submit()">
+                                <option selected>{{ product.is_featured }}</option>
+                                {% if product.is_featured %}
+                                    <option value="0">False</option>
+                                {% else %}
+                                    <option value="1">True</option>
+                                {% endif %}
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        {% for categorie in product.product_categorie.all %}
+                            <a href="{{ categorie.get_absolute_url }}">{{ categorie }}</a><br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href=""
+                           class="btn btn-warning btn-sm ">Modifier</a>
+                    </td>
+                    <td>
+                        <a href=""
+                           class="btn btn-danger btn-sm ">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

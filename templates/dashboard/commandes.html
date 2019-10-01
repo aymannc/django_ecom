@@ -26,7 +26,7 @@
                         <a href="{% url "db:order-details"  ref=order.ref_code %}">{{ order.ref_code }}</a>
                     </td>
                     <td>{{ order.user.get_full_name }}</td>
-                    <td>{{ order.ordered_date|date:"d/m/Y" }}</td>
+                    <td>{{ order.ordered_date }}</td>
                     <td>{{ order.get_total_coupon }}DH</td>
                     <td>
                         <span class="badge badge-{{ order.get_tag_type }} text-white">{{ order.get_order_status_display }}</span>
