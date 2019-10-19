@@ -13,7 +13,7 @@
                 <th>Date</th>
                 <th>Total</th>
                 <th>Statut</th>
-                <th>mettre à jour</th>
+                <th>Mettre à jour</th>
                 <th>Modifier</th>
                 <th>Supprimer</th>
 
@@ -59,4 +59,13 @@
             </tbody>
         </table>
     </div>
+    <script>
+        function func() {
+            try {
+                document.getElementsByClassName(" dropdown bootstrap-select browser-default custom-select").className = "form-control";
+            } catch (err) {
+                log.colsole(log);
+            }
+        }
+    </script>
 {% endblock %}

@@ -7,14 +7,53 @@
                 <h2>Ajouter un Produit</h2>
             </div>
         </div>
-
         <div class="col-6 mx-auto">
-            <form method="post">
+            {% if product_form.errors %}
+                <!-- Error messaging -->
+                <div class="row" id="errors">
+                    <div class="inner">
+                        <p>There were some errors in the information you entered. Please correct the following:</p>
+                        {{ product_form.non_field_errors }}
+                        <ul>
+                            {% for field in product_form %}
+                                {% if field.errors %}
+                                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /Error messaging -->
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ product_form|crispy }}
+                {#                {{ image|crispy }}#}
+                <label for="images" class="mt-2">Attributs du produit</label>
+                <div class="row mb-2">
+                    <select name="attributes" class="ml-3 selectpicker" data-live-search="true" data-width='100%'
+                            data-style="btn-primary"
+                            data-size="5" data-actions-box=true" multiple data-live-search="true">
+                        {% for attribute in attributes %}
+                            <option value="{{ attribute.id }}">{{ attribute }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <div class="row">
-                    <div class="col-2 mx-auto">
-                        <button class="btn btn-success my-3" type="submit">Ajouter</button>
+                    <div class="col-3 mx-auto">
+                        <a class="btn btn-secondary my-3" href="{% url 'db:add_category' %}">Ajouter des attributs</a>
+                    </div>
+                    <div class="col-3 mx-auto">
+                        <a class="btn btn-info my-3" href="{% url 'db:add_category' %}">Ajouter une catégorie</a>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="images">Images du produit</label>
+                    <input class="form-control" type="file" name="images" accept="image/x-png,image/gif,image/jpeg"
+                           multiple>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 mx-auto">
+                        <button class="btn btn-success my-3" type="submit">Ajouter le produit</button>
                     </div>
                 </div>
             </form>

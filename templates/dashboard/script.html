@@ -44,6 +44,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.13/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+
 <script>
     window.onload = function () {
         myFunction();
@@ -82,6 +86,16 @@
         var selText = $(this).text();
         $(this).parents('.btn-group').find('.dropdown-toggle').html(selText + ' <span class="caret"></span>');
     });
+    $('select').selectpicker();
+    try {
+        let list = document.getElementsByClassName("dropdown bootstrap-select browser-default custom-select");
+        for (let i = 0; i < list.length; i++) {
+            list[i].setAttribute("style", "padding:0;width:130px");
+        }
+    } catch (e) {
+        console.log("Exception " + e);
+    }
+
     {% if request.path == '/dashboard/' %}
         try {
             var ctx = document.getElementById('myChart').getContext('2d');

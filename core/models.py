@@ -43,7 +43,7 @@ class Image(BaseModel):
         db_table = "Image"
 
     def __str__(self):
-        return self.alt
+        return f"{self.id} - {self.alt}"
 
     def get_absolute_url(self):
         return self.image.url

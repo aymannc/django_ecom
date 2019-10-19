@@ -137,20 +137,6 @@
                                 Méthode de paiement non valide ou non spécifiée
                             </div>
                         {% endif %}
-                        <div class="row">
-                            <div class="col float-right">
-                                {% if modify %}
-                                {% else %}
-                                    <div class="row">
-                                        <div class="col">
-                                            <a href="{% url "order-modify"  ref=order.ref_code %}"
-                                               class="btn btn-info float-right mb-3"><span
-                                                    class=" text-white">Modify this order</span></a>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
                         <div class="row mx-auto">
                             <div class="col-lg-6 mb-4">
                                 <div class="card shadow mb-4 text-center h-100">
@@ -374,12 +360,14 @@
                                                 Vous devez spécifier la méthode de paiement de
                                                 commande </strong><br>
                                             {% endif %}
-                                        <button class="btn btn-info pb-0">
-                                            <label for="another-address" data-toggle="collapse"
-                                                   data-target="#modaliteform" aria-expanded="false"
-                                                   aria-controls="modaliteform"
-                                                   class="collapsed text-white">Modifier</label>
-                                        </button>
+                                        {% if modify %}
+                                            <button class="btn btn-info pb-0">
+                                                <label for="another-address" data-toggle="collapse"
+                                                       data-target="#modaliteform" aria-expanded="false"
+                                                       aria-controls="modaliteform"
+                                                       class="collapsed text-white">Modifier</label>
+                                            </button>
+                                        {% endif %}
                                         {% else %}
                                             <p><strong class="text-danger">
                                                 Vous devez spécifier la modalité de paiement de

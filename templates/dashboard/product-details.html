@@ -15,7 +15,9 @@
             <form method="post">
                 {% csrf_token %}
                 {{ product_form|crispy }}
-                <button type="submit">Here</button>
+                <div class="row">
+                    <button class="btn btn-success my-3 mx-auto" type="submit">Enregitrer</button>
+                </div>
             </form>
         </div>
 

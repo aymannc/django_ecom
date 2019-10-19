@@ -28,6 +28,22 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
+        <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsegeneral" aria-expanded="true"
+           aria-controls="collapsePages">
+            <i class="fas fa-fw fa-asterisk"></i>
+            <span>Générale</span>
+        </a>
+        <div id="collapsegeneral" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar"
+             style="">
+            <div class="bg-white py-2 collapse-inner rounded">
+                {#                <h6 class="collapse-header">Login Screens:</h6>#}
+                <a class="collapse-item" href="{% url "db:categories" %}">Catégories</a>
+                <a class="collapse-item" href="{% url "db:attributes" %}">Attributes</a>
+                {#                <div class="collapse-divider"></div>#}
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="{% url "db:commandes" %}">
             <i class="fas fa-fw fa-archive"></i>
             <span>Commandes </span></a>
@@ -42,7 +58,8 @@
              style="">
             <div class="bg-white py-2 collapse-inner rounded">
                 {#                <h6 class="collapse-header">Login Screens:</h6>#}
-                <a class="collapse-item" href="{% url "db:products" %}">List</a>
+                <a class="collapse-item" href="{% url "db:add_product" %}">Ajouter un produit</a>
+                <a class="collapse-item" href="{% url "db:products" %}">List des produits</a>
                 {#                <div class="collapse-divider"></div>#}
             </div>
         </div>

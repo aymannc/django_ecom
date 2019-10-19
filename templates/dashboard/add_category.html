@@ -1,0 +1,41 @@
+{% extends 'dashboard/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container mx-auto">
+        <div class="container my-4">
+            <div class="row mb-3">
+                <h2>Ajouter une catégorie</h2>
+            </div>
+        </div>
+        <div class="col-6 mx-auto">
+            {% if category_form.errors %}
+                <!-- Error messaging -->
+                <div class="row" id="errors">
+                    <div class="inner">
+                        <p>There were some errors in the information you entered. Please correct the following:</p>
+                        {{ category_form.non_field_errors }}
+                        <ul>
+                            {% for field in category_form %}
+                                {% if field.errors %}
+                                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /Error messaging -->
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ category_form|crispy }}
+                {#                {{ image|crispy }}#}
+                <div class="row mb-2">
+                    <div class="col-4 mx-auto">
+                        <button class="btn btn-success my-3" type="submit">Ajouter le catégorie</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+{% endblock %}
