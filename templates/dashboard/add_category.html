@@ -27,7 +27,8 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ category_form|crispy }}
-                {#                {{ image|crispy }}#}
+                {{ image_form|crispy }}
+
                 <div class="row mb-2">
                     <div class="col-4 mx-auto">
                         <button class="btn btn-success my-3" type="submit">Ajouter le catégorie</button>

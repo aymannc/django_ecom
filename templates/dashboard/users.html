@@ -1,0 +1,91 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+    <div class="container my-4">
+        <div class="row mb-3">
+            <h2>Utilisatuers</h2>
+        </div>
+        <div class="row mb-3">
+            <div class="col float-right">
+                <a href="{% url "db:add_user" %}" class="btn  btn-success">Ajouter une utilisateur</a>
+            </div>
+        </div>
+        <table id="example" class="table text-center table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Active</th>
+                <th>Superuser</th>
+                <th>Telephone</th>
+                <th>Sexe</th>
+                <th>Supprimer</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>
+                        <a href="{% url "db:user-details"  ref=user.username %}">
+                            <h5>{{ user.username }}</h5>
+                        </a>
+                    </td>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="ref" value="{{ user.username }}">
+                            <select class="browser-default custom-select" name="visible" onchange="this.form.submit()">
+                                <option selected>{{ user.is_active }}</option>
+                                {% if user.is_active %}
+                                    <option value="0">False</option>
+                                {% else %}
+                                    <option value="1">True</option>
+                                {% endif %}
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="ref" value="{{ user.username }}">
+                            <select class="browser-default custom-select" name="visible" onchange="this.form.submit()">
+                                <option selected>{{ user.is_superuser }}</option>
+                                {% if user.is_active %}
+                                    <option value="0">False</option>
+                                {% else %}
+                                    <option value="1">True</option>
+                                {% endif %}
+                            </select>
+                        </form>
+                    </td>
+                    <td>{{ user.user_profile.telephone }}{{ user.user_profile.get_gender_display }}</td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="ref" value="{{ user.username }}">
+                            <select class="browser-default custom-select" name="visible" onchange="this.form.submit()">
+                                <option selected>{{ user.user_profile.get_gender_display }}</option>
+                                {% if user.user_profile.gender == "M" %}
+                                    <option value="F">Female</option>
+                                {% elif user.user_profile.gender == "F" %}
+                                    <option value="M">Male</option>
+                                {% else %}
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                {% endif %}
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="{% url "db:deleteUser" ref=user.username %}"
+                           class=" btn btn-danger btn-sm ">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

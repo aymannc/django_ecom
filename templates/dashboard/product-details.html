@@ -2,21 +2,62 @@
 {% load crispy_forms_tags %}
 {% block content %}
     <div class="container mx-auto">
-        <section style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
-            <div class="container">
-                <div class="row d-flex">
-                    <div class="col-lg-9 order-2 order-lg-1">
-
+        <div class="container my-4">
+            <div class="row mb-3">
+                <h2>Modifie le produit</h2>
+            </div>
+        </div>
+        <div class="col-6 mx-auto">
+            {% if product_form.errors %}
+                <!-- Error messaging -->
+                <div class="row" id="errors">
+                    <div class="inner">
+                        <p>There were some errors in the information you entered. Please correct the following:</p>
+                        {{ product_form.non_field_errors }}
+                        <ul>
+                            {% for field in product_form %}
+                                {% if field.errors %}
+                                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
-            </div>
-        </section>
-        <div class="col-6 mx-auto">
-            <form method="post">
+                <!-- /Error messaging -->
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ product_form|crispy }}
                 <div class="row">
-                    <button class="btn btn-success my-3 mx-auto" type="submit">Enregitrer</button>
+                    <div class="col-3 mx-auto">
+                        <a class="btn btn-secondary my-3" href="{% url 'db:add_attribute' %}">Ajouter des attributes</a>
+                    </div>
+                    <div class="col-3 mx-auto">
+                        <a class="btn btn-info my-3" href="{% url 'db:add_category' %}">Ajouter une catégorie</a>
+                    </div>
+                </div>
+                <label for="images">Images du produit</label>
+                {% for  image in product.product_images.all %}
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <img src="{{ image.get_absolute_url }}" alt="{{ image.alt }}" width="70px">
+                        </div>
+                        <div class="col-4">
+                            <p>{{ image.alt }}</p>
+                        </div>
+                        <div class="col-3">
+                            <a class="btn btn-danger my-3" href="{% url 'db:add_category' %}">Suprimmer</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row mb-2">
+                    <label for="images">Ajouter des images</label>
+                    <input class="form-control" type="file" name="images" accept="image/x-png,image/gif,image/jpeg"
+                           multiple required>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 mx-auto">
+                        <button class="btn btn-success my-3" type="submit">Modifie le produit</button>
+                    </div>
                 </div>
             </form>
         </div>

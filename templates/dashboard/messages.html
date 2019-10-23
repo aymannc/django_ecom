@@ -1,0 +1,47 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+    <div class="container my-4">
+        <div class="row mb-3">
+            <h2>Missages</h2>
+        </div>
+        <div class="row mb-3">
+            <div class="col float-right">
+                <a href="{% url "db:add_user" %}" class="btn  btn-success">Ajouter une utilisateur</a>
+            </div>
+        </div>
+        <table id="example" class="table text-center table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Prénome</th>
+                <th>Email</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Supprimer</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for message in messages %}
+                <tr>
+                    <td>
+                        <a href="{% url "db:message-details"  ref=message.id %}">
+                            <h5>{{ forloop.counter }}</h5>
+                        </a>
+                    </td>
+                    <td>{{ message.firstname }} </td>
+                    <td>{{ message.lastname }}</td>
+                    <td>{{ message.email }}</td>
+                    <td>{{ message.message|truncatewords:7 }}</td>
+                    <td>{{ message.date_added }}</td>
+                    <td>
+                        <a href="{% url "db:deleteMessage" ref=message.id %}"
+                           class=" btn btn-danger btn-sm ">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

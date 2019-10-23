@@ -27,20 +27,9 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ product_form|crispy }}
-                {#                {{ image|crispy }}#}
-                <label for="images" class="mt-2">Attributs du produit</label>
-                <div class="row mb-2">
-                    <select name="attributes" class="ml-3 selectpicker" data-live-search="true" data-width='100%'
-                            data-style="btn-primary"
-                            data-size="5" data-actions-box=true" multiple data-live-search="true">
-                        {% for attribute in attributes %}
-                            <option value="{{ attribute.id }}">{{ attribute }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
                 <div class="row">
                     <div class="col-3 mx-auto">
-                        <a class="btn btn-secondary my-3" href="{% url 'db:add_category' %}">Ajouter des attributs</a>
+                        <a class="btn btn-secondary my-3" href="{% url 'db:add_attribute' %}">Ajouter des attributs</a>
                     </div>
                     <div class="col-3 mx-auto">
                         <a class="btn btn-info my-3" href="{% url 'db:add_category' %}">Ajouter une catégorie</a>
@@ -49,7 +38,7 @@
                 <div class="row mb-2">
                     <label for="images">Images du produit</label>
                     <input class="form-control" type="file" name="images" accept="image/x-png,image/gif,image/jpeg"
-                           multiple>
+                           multiple required>
                 </div>
                 <div class="row mb-2">
                     <div class="col-4 mx-auto">

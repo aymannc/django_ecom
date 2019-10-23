@@ -56,7 +56,7 @@ class Category(BaseModel):
     is_featured = models.BooleanField(default=False)
     parent_category = models.ForeignKey(
         'self', on_delete=models.SET_NULL, related_name='child_categories', null=True, blank=True)
-    image = models.ImageField(blank=True, null=True)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
     tags = models.ManyToManyField("Tag", related_name='categories', blank=True)
 
     class Meta:
@@ -82,6 +82,8 @@ class Category(BaseModel):
             for category in self.child_categories.all():
                 for product in category.products.all():
                     products.append(product)
+            for product in self.products.all():
+                products.append(product)
         return products
 
 
@@ -174,15 +176,11 @@ class Product(BaseModel):
         for image in self.product_images.all():
             if image.is_primary:
                 return image
-        return self.product_images.all()[0]
+        return self.product_images.all()[0] if self.product_images.all() else None
 
 
 class Product_Options(BaseModel):
     option_name = models.CharField("option name", max_length=200)
-    category = models.ManyToManyField(Category)
-
-    option_values = models.ManyToManyField(
-        "Product_Options_Values", related_name='options')
 
     class Meta:
         db_table = "Product_Options"
@@ -196,6 +194,7 @@ class Product_Options_Values(BaseModel):
     value = models.CharField("option name", max_length=200)
     price = models.DecimalField(
         "Price of an option", max_digits=10, decimal_places=2, default=0, null=True)
+    related_option = models.ForeignKey(Product_Options, on_delete=models.CASCADE, related_name="values")
 
     class Meta:
         db_table = "Product_Options_Values"

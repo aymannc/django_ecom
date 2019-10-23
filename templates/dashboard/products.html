@@ -15,9 +15,9 @@
                 <th>Produit</th>
                 <th>Qauntité</th>
                 <th>Prix</th>
-                <th>visible</th>
-                <th>is_featured</th>
-                <th>product_categorie</th>
+                <th>Visible</th>
+                <th>Populaire</th>
+                <th>Catégorie du produit</th>
                 <th>Modifier</th>
                 <th>Supprimer</th>
 
@@ -66,12 +66,12 @@
                         {% endfor %}
                     </td>
                     <td>
-                        <a href=""
+                        <a href="{% url "db:product-details"  ref=product.slug %}"
                            class="btn btn-warning btn-sm ">Modifier</a>
                     </td>
                     <td>
-                        <a href=""
-                           class="btn btn-danger btn-sm ">Supprimer</a>
+                        <a href="{% url "db:deleteProduct" ref=product.slug %}"
+                           class=" btn btn-danger btn-sm ">Supprimer</a>
                     </td>
                 </tr>
             {% endfor %}

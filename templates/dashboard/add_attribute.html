@@ -1,0 +1,108 @@
+{% extends 'dashboard/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container mx-auto">
+        <div class="container my-4">
+            <div class="row mb-3">
+                <h2>Ajouter une attribute</h2>
+            </div>
+        </div>
+        <div class="col-6 mx-auto">
+            {% if attributes_form.errors %}
+                <!-- Error messaging -->
+                <div class="row" id="errors">
+                    <div class="inner">
+                        <p>There were some errors in the information you entered. Please correct the following:</p>
+                        {{ attributes_form.non_field_errors }}
+                        <ul>
+                            {% for field in attributes_form %}
+                                {% if field.errors %}
+                                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /Error messaging -->
+            {% endif %}
+            <div class="row mb-3">
+                <div class="col-3 mx-auto">
+                    <button class="btn btn-info pb-0">
+                        <label for="another-option" data-toggle="collapse"
+                               data-target="#add_option" aria-expanded="false"
+                               aria-controls="add_option"
+                               class="collapsed text-white">Ajouter une option</label>
+                    </button>
+                </div>
+                <div class="col-3 mx-auto">
+                    <button class="btn btn-info pb-0">
+                        <label for="another-value" data-toggle="collapse"
+                               data-target="#add_value" aria-expanded="false"
+                               aria-controls="add_value"
+                               class="collapsed text-white">Ajouter une valeur</label>
+                    </button>
+                </div>
+            </div>
+            <div id="add_option" aria-expanded="false" class="col-lg-12 collapse"
+                 style="">
+                <div class="card-body mx-auto">
+                    <div class="row mt-4">
+                        <div class="col text-center">
+                            <h6 class="text-uppercase">Ajouter une option</h6>
+                        </div>
+                    </div>
+                    <div class="row mb-4 mt-2">
+                        <div class="col mx-auto">
+                            <form method="post" name="option_values_form">
+                                {% csrf_token %}
+                                {{ option_form |crispy }}
+                                <div class="row mx-auto">
+                                    <input type="submit" value="Ajouter"
+                                           class="btn btn-primary text-white mt-2 mx-auto">
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div id="add_value" aria-expanded="false" class="col-lg-12 collapse"
+                 style="">
+                <div class="card-body mx-auto">
+                    <div class="row mt-4">
+                        <div class="col text-center">
+                            <h6 class="text-uppercase">Ajouter une valeur</h6>
+                        </div>
+                    </div>
+                    <div class="row mb-4 mt-2">
+                        <div class="col mx-auto">
+                            <form method="post" name="option_values_form">
+                                {% csrf_token %}
+                                {{ option_values_form |crispy }}
+                                <div class="row mx-auto">
+                                    <input type="submit" value="Ajouter"
+                                           class="btn btn-primary text-white mt-2 mx-auto">
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ attributes_form|crispy }}
+                <div class="row mb-2">
+                    <div class="col-4 mx-auto">
+                        <button class="btn btn-success my-3" type="submit">Ajouter l'attribute</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+{% endblock %}

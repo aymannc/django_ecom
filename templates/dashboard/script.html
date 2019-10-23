@@ -77,10 +77,22 @@
         $('#example').dataTable({
             "order": [],
             'columnDefs': [{
-                'targets': [5, 6, 7], /* column index */
-                'orderable': false, /* true or false */
-            }]
-        });
+                'targets':
+                    {% if request.path == '/dashboard/users/' %}
+                        [7],
+                    {% elif request.path == '/dashboard/messages/' %}
+                        [6],
+                    {% elif request.path == '/dashboard/orders/' or request.path == '/dashboard/products/' %}
+                        [5, 6, 7],
+                    {% else %}-
+                        [''],
+                    {% endif %}
+            'orderable';
+    :
+        false, /* true or false */
+    }
+    ]
+    })
     });
     $(".dropdown-menu li a").click(function () {
         var selText = $(this).text();

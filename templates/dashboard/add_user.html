@@ -1,0 +1,129 @@
+{% extends 'dashboard/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container mx-auto">
+        <div class="container my-4">
+            <div class="row mb-3">
+                <h2>Ajouter une utilisateur</h2>
+            </div>
+        </div>
+        <div class="col-6 mx-auto">
+            {% if user_form.errors %}
+                <!-- Error messaging -->
+                <div class="row" id="errors">
+                    <div class="inner">
+                        <p>Il y avait des erreurs dans les informations que vous avez entrées. Veuillez corriger les
+                            points suivants:</p>
+                        {{ user_form.non_field_errors }}
+                        {% for field in user_form %}
+                            {% if field.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ field.label }}: {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            {% if address_form.errors %}
+                <!-- Error messaging -->
+                <div class="row" id="errors">
+                    <div class="inner">
+                        <p>Il y avait des erreurs dans les informations que vous avez entrées. Veuillez corriger les
+                            points suivants:</p>
+                        {{ address_form.non_field_errors }}
+                        {% for field in address_form %}
+                            {% if field.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ field.label }}: {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            {% if profile_form.errors %}
+                <div class="row" id="errors">
+                <div class="inner">
+                <p>Il y avait des erreurs dans les informations que vous avez entrées. Veuillez corriger les
+                    points suivants:</p>
+                {{ profile_form.non_field_errors }}
+                {{ profile_formprofile_form.non_field_errors }}
+                {% for field in profile_form %}
+                    {% if field.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ field.label }}: {{ field.errors|striptags }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if success %}
+                <div class="row" id="success">
+                    <div class="alert alert-success col-12 mx-auto" role="alert">
+                        Utilisateur ajouté
+                    </div>
+                </div>
+            {% endif %}
+            <div class="row">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {{ image_form|crispy }}
+                    {% for field in user_form.visible_fields %}
+                        <div class="control-group my-3" id="div_id_email">
+                            {{ field.label }}
+                            <div class="controls mb-3">
+                                {{ field }}
+                                {{ field.help_text }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% for field in profile_form.visible_fields %}
+                        <div class="control-group my-3" id="div_id_email">
+                            {{ field.label }}
+                            <div class="controls mb-3">
+                                {{ field }}
+                                {{ field.help_text }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="control-group mt-5 mb-2">
+                        <h4>Votre adresse </h4>
+                    </div>
+                    <div class="control-group my-3">Adresse postale
+                        <div class="controls mb-3">
+                            {{ address_form.street_address }}
+                        </div>
+                    </div>
+                    <div class="control-group my-3">
+                        {{ address_form.zip.label }}
+                        <div class="controls mb-3">
+                            {{ address_form.zip }}
+                        </div>
+                    </div>
+                    <div class="control-group my-3">Ville
+                        <div class="controls mb-3">
+                            {{ address_form.city }}
+                        </div>
+                    </div>
+                    <div class="control-group my-3">Région
+                        <div class="controls mb-3">
+                            {{ address_form.state }}
+                        </div>
+                    </div>
+                    <div class="control-group my-3">Pays
+                        <div class="controls mb-3">
+                            {{ address_form.country }}
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 mx-auto">
+                            <button class="btn btn-success my-3" type="submit">Ajouter l'utilisatuer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+            </div>
+{% endblock %}

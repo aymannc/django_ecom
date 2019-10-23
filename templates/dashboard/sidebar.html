@@ -65,28 +65,33 @@
         </div>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-user"></i>
+        <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="true"
+           aria-controls="collapseUsers">
+            <i class="fas fa-fw fa-store"></i>
             <span>Utilisateurs</span>
         </a>
+        <div id="collapseUsers" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar"
+             style="">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{% url "db:add_user" %}">Ajouter une utilisateur</a>
+                <a class="collapse-item" href="{% url "db:users" %}">List des utilisateurs</a>
+            </div>
+        </div>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-chart-bar"></i>
-            <span>Analytique</span>
-        </a>
+        <a class="nav-link" href="{% url "db:analytique" %}">
+            <i class="fas fa-fw fa-archive"></i>
+            <span>Analytique </span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{% url "db:messages" %}">
             <i class="fas fa-fw fa-comments"></i>
-            <span>Messages</span>
-        </a>
+            <span>Messages</span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{% url "db:messages" %}">
             <i class="fas fa-fw fa-mail-bulk"></i>
-            <span>NewsLetter</span>
-        </a>
+            <span>NewsLetter</span></a>
     </li>
     <hr class="sidebar-divider d-none d-md-block">
     <!-- Sidebar Toggler (Sidebar) -->
