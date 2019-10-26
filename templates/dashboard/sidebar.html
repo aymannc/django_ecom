@@ -98,7 +98,10 @@
              style="">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{% url "db:add-newsletter" %}">Ajouter une Newsletter</a>
-                <a class="collapse-item" href="{% url "db:newsletter" %}">Historique</a>
+                <a class="collapse-item" href="{% url "db:newsletter" %}">List des Newsletters</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Emails:</h6>
+                <a class="collapse-item" href="{% url "db:newsletter-emails" %}">List des emails</a>
             </div>
         </div>
     </li>

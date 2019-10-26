@@ -1,0 +1,39 @@
+{% extends 'dashboard/base.html' %}
+{% load mytags %}
+{% block content %}
+    <div class="container my-4">
+        <div class="row mb-3">
+            <h2>Newsletter emails</h2>
+        </div>
+        <table id="example" class="table text-center table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Email</th>
+                <th>Active</th>
+                <th>Date</th>
+                <th>Supprimer</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for email in newsletters_emails %}
+                <tr>
+                    <td>
+                        <a href="{% url "db:newsletter-details"  ref=email.id %}">
+                            <h5>{{ newsletters_emails|length|add:1|sub:forloop.counter }}</h5>
+                        </a>
+                    </td>
+                    <td>{{ email.email }} </td>
+                    <td>{{ email.is_active }}</td>
+                    <td>{{ email.date_added }}</td>
+                    <td>
+                        <a href="{% url "db:delete-newsletter-email" ref=email.id %}"
+                           class=" btn btn-danger btn-sm ">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
