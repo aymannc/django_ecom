@@ -89,9 +89,18 @@
             <span>Messages</span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{% url "db:messages" %}">
+        <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseNewsLetter" aria-expanded="true"
+           aria-controls="collapseNewsLetter">
             <i class="fas fa-fw fa-mail-bulk"></i>
-            <span>NewsLetter</span></a>
+            <span>NewsLetter</span>
+        </a>
+        <div id="collapseNewsLetter" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar"
+             style="">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{% url "db:add-newsletter" %}">Ajouter une Newsletter</a>
+                <a class="collapse-item" href="{% url "db:newsletter" %}">Historique</a>
+            </div>
+        </div>
     </li>
     <hr class="sidebar-divider d-none d-md-block">
     <!-- Sidebar Toggler (Sidebar) -->

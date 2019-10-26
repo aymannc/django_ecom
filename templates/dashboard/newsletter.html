@@ -1,0 +1,44 @@
+{% extends 'dashboard/base.html' %}
+{% load mytags %}
+{% block content %}
+    <div class="container my-4">
+        <div class="row mb-3">
+            <h2>Newsletters</h2>
+        </div>
+        <table id="example" class="table text-center table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Sujet</th>
+                <th>Contenu</th>
+                <th>Date</th>
+                <th>Envoyer</th>
+                <th>Supprimer</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for newsletter in newsletters %}
+                <tr>
+                    <td>
+                        <a href="{% url "db:newsletter-details"  ref=newsletter.id %}">
+                            <h5>{{ newsletters|length|add:1|sub:forloop.counter }}</h5>
+                        </a>
+                    </td>
+                    <td>{{ newsletter.title }} </td>
+                    <td>{{ newsletter.content|truncatewords:7 }}</td>
+                    <td>{{ newsletter.date_added }}</td>
+                    <td>
+                        <a href="{% url "db:send-newsletter" ref=newsletter.id %}"
+                           class=" btn btn-success btn-sm ">Envoyer</a>
+                    </td>
+                    <td>
+                        <a href="{% url "db:delete-newsletter" ref=newsletter.id %}"
+                           class=" btn btn-danger btn-sm ">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -84,14 +84,15 @@
                         [6],
                     {% elif request.path == '/dashboard/orders/' or request.path == '/dashboard/products/' %}
                         [5, 6, 7],
-                    {% else %}-
+                    {% elif request.path == '/dashboard/newsletter/'%}
+                        [4,5;],
+                    {% else %}
                         [''],
                     {% endif %}
-            'orderable';
+                'orderable';
     :
-        false, /* true or false */
-    }
-    ]
+        false,
+    }]
     })
     });
     $(".dropdown-menu li a").click(function () {

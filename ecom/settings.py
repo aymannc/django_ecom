@@ -24,7 +24,7 @@ SECRET_KEY = '^y%eh^w37kez6n%##vef$7s8b9%5pc)pavsl-0b8eky2@juhb_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.1.103", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'crispy_forms'
+    'crispy_forms',
+    'tinymce',
 ]
 SITE_ID = 1
 MIDDLEWARE = [
@@ -164,3 +165,40 @@ MEDIA_URL = '/media/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'foxprods.contact@gmail.com'
+EMAIL_HOST_PASSWORD = 'Ayman@nait98'
+EMAIL_PORT = 587
+
+TINYMCE_DEFAULT_CONFIG = {
+    'relative_urls': False,
+    'remove_script_host': False,
+    'width': 900,
+    'height': 400,
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 20,
+    'selector': 'textarea',
+    'theme': 'modern',
+    'plugins': '''
+            textcolor save link image media preview codesample contextmenu
+            table code lists fullscreen  insertdatetime  nonbreaking
+            contextmenu directionality searchreplace wordcount visualblocks
+            visualchars code fullscreen autolink lists  charmap print  hr
+            anchor pagebreak
+            ''',
+    'toolbar1': '''
+            fullscreen preview bold italic underline | fontselect,
+            fontsizeselect  | forecolor backcolor | alignleft alignright |
+            aligncenter alignjustify | indent outdent | bullist numlist table |
+            | link image media | codesample |
+            ''',
+    'toolbar2': '''
+            visualblocks visualchars |
+            charmap hr pagebreak nonbreaking anchor |  code |
+            ''',
+    'contextmenu': 'formats | link image',
+    'menubar': True,
+    'statusbar': True,
+}

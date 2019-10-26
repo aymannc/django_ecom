@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from tinymce.widgets import TinyMCE
 
 from core.models import *
 
@@ -35,6 +36,18 @@ class UserForm(UserCreationForm):
         super(UserForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control my-3'
+
+
+class NewsLetterForm(forms.ModelForm):
+    content = forms.CharField(widget=TinyMCE())
+
+    class Meta:
+        model = NewsLetter
+        fields = ('title', 'content')
+
+    def __init__(self, *args, **kwargs):
+        super(NewsLetterForm, self).__init__(*args, **kwargs)
+        self.fields['title'].widget.attrs['class'] = 'form-control col-6 my-3'
 
 
 class ProfileForm(forms.ModelForm):

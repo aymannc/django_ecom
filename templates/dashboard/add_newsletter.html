@@ -1,0 +1,46 @@
+{% extends 'dashboard/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container mx-auto">
+        <div class="container my-4">
+            <div class="row mb-3">
+                <h2>Ajouter une NewsLetter</h2>
+            </div>
+        </div>
+        <div class="col mx-auto">
+            {% if newsletter_form.errors %}
+                <!-- Error messaging -->
+                <div class="row" id="errors">
+                    <div class="inner">
+                        <p>There were some errors in the information you entered. Please correct the following:</p>
+                        {{ newsletter_form.non_field_errors }}
+                        <ul>
+                            {% for field in newsletter_form %}
+                                {% if field.errors %}
+                                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /Error messaging -->
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="id_title">Sujet*</label>
+                {{ newsletter_form.title }}
+                <label for="id_title" class="mb-3">Contenu*</label>
+                {{ newsletter_form.content }}
+                <div class="row mb-2">
+                    <div class="col-4 mx-auto">
+                        <button class="btn btn-success my-3" type="submit">
+                            {% if modify %}
+                                Modifier
+                            {% else %}Ajouter{% endif %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+{% endblock %}

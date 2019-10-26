@@ -1,6 +1,8 @@
+import string
+
 from allauth.account.forms import LoginForm
 from django import forms
-import string
+
 from .models import *
 
 GENDER_CHOICES = [
@@ -73,12 +75,10 @@ class ContactForm(forms.ModelForm):
             visible.field.widget.attrs['class'] = 'form-control'
 
 
-class NewsLetterForm(forms.ModelForm):
-    email = forms.EmailField(max_length=50, label='Votre adresse email')
-
+class NewsLetterEmailForm(forms.ModelForm):
     class Meta:
-        model = NewsLetter
-        fields = "__all__"
+        model = NewsLetterEmail
+        fields = ('email',)
 
 
 class UserProfileForm(forms.Form):

@@ -1,6 +1,6 @@
 from django import template
 
-from core.forms import NewsLetterForm
+from core.forms import NewsLetterEmailForm
 from core.models import Category, Order, Address
 
 register = template.Library()
@@ -52,7 +52,7 @@ def profile_order_count(context):
 
 @register.simple_tag
 def newsletter_form():
-    return NewsLetterForm()
+    return NewsLetterEmailForm()
 
 
 @register.simple_tag(takes_context=True)

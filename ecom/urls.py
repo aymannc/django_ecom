@@ -22,6 +22,7 @@ from core.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', include('dashboard.urls')),
+    path('tinymce/', include('tinymce.urls')),
     path('', include('allauth.urls')),
 
     path('', home, name="home"),

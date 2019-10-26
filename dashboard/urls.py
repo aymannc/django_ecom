@@ -5,6 +5,7 @@ from .views import *
 app_name = "db"
 urlpatterns = [
     path('', dashboard, name="dashboard"),
+
     path('orders/', commandes, name="commandes"),
     path('order-details/<slug:ref>', db_order_details, name="order-details"),
 
@@ -28,7 +29,15 @@ urlpatterns = [
 
     path('analytique/', analytique, name="analytique"),
 
-    path('messages/', messages, name="messages"),
+    path('messages/', contacts, name="messages"),
     path('message-details/<slug:ref>', db_messages_details, name="message-details"),
     path('deleteMessage/<slug:ref>', db_delete_message, name="deleteMessage"),
+
+    path('newsletter/', newsletter, name="newsletter"),
+    path('add-newsletter/', add_newsletter, name="add-newsletter"),
+    path('newsletter-details/<slug:ref>', newsletter_details, name="newsletter-details"),
+    path('send-newsletter/<slug:ref>', send_newsletter, name="send-newsletter"),
+    path('delete-newsletter/<slug:ref>', del_newsletter, name="delete-newsletter"),
+
+    path('newsletter-emails/<slug:ref>', db_messages_details, name="newsletter-emails"),
 ]

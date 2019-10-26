@@ -4,11 +4,13 @@ from urllib.parse import quote_plus
 from allauth.account.forms import ChangePasswordForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import FieldDoesNotExist, Q
 from django.forms.models import model_to_dict
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.utils.html import strip_tags
 
 from .forms import *
 from .models import *
@@ -929,12 +931,33 @@ def confirmation(req):
     return render(req, "checkout5.html", context)
 
 
+def send_welcome_mail(email, red):
+    try:
+        newsletter_obj = NewsLetter.objects.get(title='Bienvenue chez FoxProds')
+        text_content = strip_tags(newsletter_obj.content)
+        msg = EmailMultiAlternatives(newsletter_obj.title, text_content, settings.EMAIL_HOST, [email])
+        msg.attach_alternative(newsletter_obj.content, "text/html")
+        msg.send()
+    except Exception as ex:
+        print("Esception ", ex)
+        return redirect(red)
+
+
 def newsletter(req):
     if req.POST:
-        form = NewsLetterForm(req.POST or None)
+        form = NewsLetterEmailForm(req.POST or None)
         if form.is_valid():
-            form.save()
-            messages.success(req, "Email added successful ")
+            email_form = form.save(commit=False)
+            try:
+                NewsLetterEmail.objects.get(email=email_form.email)
+                messages.warning(req, "votre email existe déjà dans notre base de données")
+            except:
+                email_form.save()
+                try:
+                    send_welcome_mail(email_form.email, req.POST.get("next", 'home'))
+                except:
+                    pass
+                messages.success(req, "Email ajouter avec succès ")
         else:
             messages.error(req, form.errors)
     return redirect(req.POST.get("next", 'home'))

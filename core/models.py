@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.shortcuts import reverse
+from tinymce.models import HTMLField
 
 # Create your models here.
 TAG_CHOICES = [
@@ -441,11 +442,20 @@ class Contact(BaseModel):
         return f"From {self.firstname} {self.lastname}"
 
 
-class NewsLetter(BaseModel):
+class NewsLetterEmail(BaseModel):
     email = models.EmailField()
+    is_active = models.BooleanField(default=True, blank=True)
 
     def __str__(self):
         return f"From {self.email}"
+
+
+class NewsLetter(BaseModel):
+    title = models.CharField(max_length=50)
+    content = HTMLField()
+
+    def __str__(self):
+        return f"From {self.content}"
 
 
 class UserProfile(BaseModel):

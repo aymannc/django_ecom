@@ -1,13 +1,9 @@
 {% extends 'dashboard/base.html' %}
+{% load mytags %}
 {% block content %}
     <div class="container my-4">
         <div class="row mb-3">
-            <h2>Missages</h2>
-        </div>
-        <div class="row mb-3">
-            <div class="col float-right">
-                <a href="{% url "db:add_user" %}" class="btn  btn-success">Ajouter une utilisateur</a>
-            </div>
+            <h2>Messages</h2>
         </div>
         <table id="example" class="table text-center table-striped table-bordered">
             <thead>
@@ -27,7 +23,7 @@
                 <tr>
                     <td>
                         <a href="{% url "db:message-details"  ref=message.id %}">
-                            <h5>{{ forloop.counter }}</h5>
+                            <h5>{{ messages|length|add:1|sub:forloop.counter }}</h5>
                         </a>
                     </td>
                     <td>{{ message.firstname }} </td>
