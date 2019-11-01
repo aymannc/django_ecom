@@ -52,17 +52,15 @@
     window.onload = function () {
         myFunction();
         func();
-        {% if request.path == '/dashboard/newsletter-emails/' %}
-            try {
-                document.getElementsByClassName("dataTables_wrapper form-inline dt-bootstrap4 no-footer")[0].className += " container-fluid d-flex h-100 flex-column";
-                let y = document.getElementsByClassName("row");
-                for (let i = 1; i < y.length; i++) {
-                    y[i].classList.add('my-3');
-                }
-            } catch (e) {
-                console.log(e)
+        try {
+            document.getElementsByClassName("dataTables_wrapper form-inline dt-bootstrap4 no-footer")[0].className += " container-fluid d-flex h-100 flex-column";
+            let y = document.getElementsByClassName("row");
+            for (let i = 1; i < y.length; i++) {
+                y[i].classList.add('my-3');
             }
-        {% endif %}
+        } catch (e) {
+            console.log(e)
+        }
     };
 
     function myFunction() {
@@ -92,7 +90,7 @@
                     {% if request.path == '/dashboard/users/' %}
                         [7],
                     {% elif request.path == '/dashboard/messages/' %}
-                        [6],
+                        [7],
                     {% elif request.path == '/dashboard/orders/' or request.path == '/dashboard/products/' %}
                         [5, 6, 7],
                     {% elif request.path == '/dashboard/newsletter-emails/'%}

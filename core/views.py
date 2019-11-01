@@ -921,6 +921,13 @@ def confirmation(req):
         order.ordered_date = timezone.now()
         order.order_status = "ON HOLD"
         order.save()
+        try:
+            text_content = strip_tags("hello")
+            msg = EmailMultiAlternatives("welcome", text_content, settings.EMAIL_HOST, to=order.user.email)
+            msg.attach_alternative("<br>hello</br>", "text/html")
+            msg.send()
+        except Exception as e:
+            print("Couldn't send the mail ", e)
     except Exception as e:
         print("exception", e)
         messages.error(req, "Error while saving your order")

@@ -3,6 +3,9 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.shortcuts import reverse
 from tinymce.models import HTMLField
+from django.db.models.signals import post_save
+from allauth.account.signals import email_confirmed
+from django.dispatch import receiver
 
 # Create your models here.
 TAG_CHOICES = [
@@ -177,6 +180,7 @@ class Product(BaseModel):
         for image in self.product_images.all():
             if image.is_primary:
                 return image
+        print('here2', self.product_images.all()[0] if self.product_images.all() else None)
         return self.product_images.all()[0] if self.product_images.all() else None
 
 
@@ -293,6 +297,7 @@ class Order(BaseModel):
         max_length=100, unique=True)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(blank=True, null=True)
+    complete_date = models.DateTimeField(blank=True, null=True)
     ordered = models.BooleanField(default=False)
     order_status = models.CharField(
         max_length=15,
@@ -319,12 +324,16 @@ class Order(BaseModel):
     def __str__(self):
         return f"{self.ref_code} by {self.user} is ordered :{self.ordered}"
 
+    def get_invoice_url(self):
+        return reverse("db:facture", kwargs={"ref": self.ref_code}) if self.order_status == "COMPLETED" else None
+
     def get_total(self):
         total = 0.0
         for order_item in self.items.all():
             total += float(order_item.get_subtotal())
         return total
 
+    @property
     def get_total_coupon(self):
         total = self.get_total()
         if self.coupon:
@@ -437,6 +446,7 @@ class Contact(BaseModel):
     lastname = models.CharField(max_length=50)
     email = models.EmailField()
     message = models.TextField()
+    seen = models.BooleanField(default=False)
 
     def __str__(self):
         return f"From {self.firstname} {self.lastname}"
@@ -471,3 +481,18 @@ class UserProfile(BaseModel):
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_profile(sender, **kwargs):
+    if kwargs['created']:
+        user_profile = UserProfile.objects.create(user=kwargs['instance'])
+
+
+@receiver(email_confirmed)
+def send_welcome_mail(sender, **kwargs):
+    print(kwargs)
+    if kwargs['email_address']:
+        print("this is the verified mail " + kwargs['email_address'].email)
+
+# post_save.connect(create_profile, sender=settings.AUTH_USER_MODEL)

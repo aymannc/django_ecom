@@ -5,6 +5,8 @@ from .views import *
 app_name = "db"
 urlpatterns = [
     path('', dashboard, name="dashboard"),
+    path('facture/<slug:ref>', generate_pdf, name="facture"),
+    path('demo/', demo, name="demo"),
 
     path('orders/', commandes, name="commandes"),
     path('order-details/<slug:ref>', db_order_details, name="order-details"),

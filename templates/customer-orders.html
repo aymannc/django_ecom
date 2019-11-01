@@ -37,12 +37,18 @@
                         <tbody>
                         {% for order in orders %}
                             <tr>
-                                <th><a href="{% url "order-details"  ref=order.ref_code %}">{{ order.ref_code }}</a>
+                                <th><a href="{% url "order-details"  ref=order.ref_code %}">{{ order.ref_code }}</a><br>
+                                    {% if order.get_invoice_url %}
+                                        <a class="badge badge-success text-white" href="{{ order.get_invoice_url }}"
+                                           target="_blank">Facture</a>
+                                    {% endif %}
                                 </th>
                                 <td>{{ order.ordered_date|date:"d/m/Y" }}</td>
                                 <td>{{ order.get_total_coupon }}DH</td>
-                                <td><span
-                                        class="badge badge-{{ order.get_tag_type }} text-white">{{ order.get_order_status_display }}</span>
+                                <td>
+                                    <span class="badge badge-{{ order.get_tag_type }} text-white">{{ order.get_order_status_display }}</span><br>
+
+
                                 </td>
 
                                 {% for action in order.get_product_actions %}

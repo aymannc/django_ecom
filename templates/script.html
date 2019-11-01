@@ -12,6 +12,14 @@
     window.onload = function () {
         myFunction();
         func();
+        try {
+            let y = document.getElementsByClassName("textinput textInput");
+            for (let i = 0; i < y.length; i++) {
+                y[i].classList.add('form-control');
+            }
+        } catch (e) {
+            console.log(e)
+        }
     };
 
     function myFunction() {
@@ -27,15 +35,18 @@
 
     function func() {
         try {
-            document.getElementById("id_oldpassword").className = "form-control";
-            document.getElementById("id_email").className = "form-control";
             document.getElementById("id_password1").className = "form-control";
+        } catch (err) {}
+        try {
             document.getElementById("id_password2").className = "form-control";
-        } catch (err) {
-
-        }
+        } catch (err) {}
+        try {
+            document.getElementById("id_oldpassword").className = "form-control";
+        } catch (err) {}
+        try {
+            document.getElementById("id_email").className = "form-control";
+        } catch (err) {}
     }
-
     function is_changed() {
         document.getElementById("changed").value = "True";
     }

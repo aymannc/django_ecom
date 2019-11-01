@@ -13,6 +13,7 @@
                 <th>Prénome</th>
                 <th>Email</th>
                 <th>Message</th>
+                <th>Vu</th>
                 <th>Date</th>
                 <th>Supprimer</th>
 
@@ -30,6 +31,9 @@
                     <td>{{ message.lastname }}</td>
                     <td>{{ message.email }}</td>
                     <td>{{ message.message|truncatewords:7 }}</td>
+                    <td>
+                        <span class="text-{% if message.seen %}success{% else %}danger{% endif %}">{{ message.seen }}</span>
+                    </td>
                     <td>{{ message.date_added }}</td>
                     <td>
                         <a href="{% url "db:deleteMessage" ref=message.id %}"

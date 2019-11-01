@@ -27,7 +27,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for order_item in order.items.all %}
+                     {% for order_item in order.items.all %}
                         {% with order_item.product as product %}
                             <tr>
                                 <th scope="row" colspan="2" class="table-light">

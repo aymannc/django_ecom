@@ -39,6 +39,7 @@
                 {#                <h6 class="collapse-header">Login Screens:</h6>#}
                 <a class="collapse-item" href="{% url "db:categories" %}">Catégories</a>
                 <a class="collapse-item" href="{% url "db:attributes" %}">Attributes</a>
+                <a class="collapse-item" href="{% url "db:attributes" %}">Coupon</a>
                 {#                <div class="collapse-divider"></div>#}
             </div>
         </div>
@@ -67,7 +68,7 @@
     <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="true"
            aria-controls="collapseUsers">
-            <i class="fas fa-fw fa-store"></i>
+            <i class="fas fa-fw fa-user"></i>
             <span>Utilisateurs</span>
         </a>
         <div id="collapseUsers" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar"
@@ -80,7 +81,7 @@
     </li>
     <li class="nav-item">
         <a class="nav-link" href="{% url "db:analytique" %}">
-            <i class="fas fa-fw fa-archive"></i>
+            <i class="fas fa-fw fa-chart-bar"></i>
             <span>Analytique </span></a>
     </li>
     <li class="nav-item">

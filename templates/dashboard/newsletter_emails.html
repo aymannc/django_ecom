@@ -25,7 +25,20 @@
                         </a>
                     </td>
                     <td>{{ email.email }} </td>
-                    <td>{{ email.is_active }}</td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="ref" value="{{ email.id }}">
+                            <select class="browser-default custom-select" name="active" onchange="this.form.submit()">
+                                <option selected>{{ email.is_active }}</option>
+                                {% if email.is_active %}
+                                    <option value="0">False</option>
+                                {% else %}
+                                    <option value="1">True</option>
+                                {% endif %}
+                            </select>
+                        </form>
+                    </td>
                     <td>{{ email.date_added }}</td>
                     <td>
                         <a href="{% url "db:delete-newsletter-email" ref=email.id %}"

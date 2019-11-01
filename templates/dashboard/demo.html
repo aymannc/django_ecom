@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Facture  {{ order.ref_code }}</title>
+    <style>
+        .content table {
+            font-size: 16px;
+            border: 1px solid black;
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .content th {
+            border: 1px solid black;
+            text-align: center;
+            padding: 5px 2px;
+            font-size: 18px;
+        }
+
+        .content td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 5px 2px;
+            font-size: 16px;
+        }
+
+        .content tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        .heading td {
+            font-size: 15px;
+            margin: 30px;
+        }
+
+        .cells {
+            padding-top: 20px;
+        }
+
+
+    </style>
+</head>
+<body>
+<table class="heading" style="margin-bottom: 50px">
+    <tr>
+        <td colspan="3"><img src="https://i.ibb.co/sWj7fwP/foxlogo.png" alt="foxlogo" border="0" width="300px">
+        </td>
+        <td colspan="2">
+            <span style="font-size: 20px ;color: purple;">Fox Prods</span><br>
+            <span><strong>Address</strong></span>: N° 11 Avenue Abderrahim Bouaabid 80020 Agadir - Maroc<br>
+            <span><strong>Tél</strong></span> : +212-528-213-045 <br>
+            <span><strong>Email</strong></span>: foxprods.contact@gmail.com
+        </td>
+    </tr>
+    <tr>
+        <td class="cells" colspan="3">
+            <strong>FACTURE À L'INTENTION DE</strong><br>
+            <span><strong>Nom</strong></span> : {{ order.user.get_full_name }} <br>
+            <span><strong>Address</strong></span> : {{ order.billing_address }}<br>
+            <span><strong>Tél</strong></span> : {{ order.user.user_profile.telephone }} <br>
+            <span><strong>Email</strong></span> : {{ order.user.email }}
+        </td>
+        <td class="cells" colspan="2">
+            <span><strong>Référence</strong></span> : <span
+                style="color: purple;font-size: 20px;">{{ order.ref_code }}</span><br>
+            <span><strong>Date</strong></span> : Le {{ order.complete_date|date:"d/m/Y" }}
+        </td>
+    </tr>
+</table>
+<table class="content">
+    <tr>
+        <th>Image</th>
+        <th colspan="3">Produit</th>
+        <th>Prix unitaire</th>
+        <th>Quantité</th>
+        <th>Sous Total</th>
+    </tr>
+
+    {% for order_item in order.items.all %}
+        <tr>
+            {% with order_item.product as product %}
+                <td>
+                    {% with product.get_primary_image as image %}
+                        <img src="../{{ image.get_absolute_url }}" alt="{{ image.alt }}" width="80px" class="img-fluid">
+                    {% endwith %}
+                </td>
+                <td colspan="3">
+                    {{ product.product_name }}
+                </td>
+                <td>{{ order_item.get_total_price }}</td>
+                <td>{{ order_item.quantity }}</td>
+                <td>{{ order_item.get_subtotal }}</td>
+            {% endwith %}
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="7" style="border: 0px"></td>
+    </tr>
+    <tr>
+        <td colspan="7" style="border: 0px"></td>
+    </tr>
+    <tr>
+        <td colspan="3" style="border: 0px"></td>
+        <td colspan="2"><strong>Sous total</strong></td>
+        <td colspan="2">
+            <strong style="color: purple">{{ order.get_total }}DH</strong>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="border: 0px"></td>
+        <td colspan="2"><strong>Livraison</strong></td>
+        <td colspan="2">
+            <strong>{{ order.delivery_method.shipping_price }}DH</strong>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="border: 0px"></td>
+        <td colspan="2"><strong>Code Promo</strong></td>
+        <td colspan="2">
+            <strong style="color: green">-{% if order.coupon %}
+                {{ order.coupon.amount }}{% else %}0{% endif %}DH</strong>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="border: 0px"></td>
+        <td colspan="2"><strong>Total</strong></td>
+        <td colspan="2">
+            <strong style="color: purple">{{ order.get_total_coupon }}DH</strong>
+        </td>
+    </tr>
+
+
+</table>
+</body>
+</html>

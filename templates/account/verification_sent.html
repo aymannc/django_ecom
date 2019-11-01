@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Change Password" %}{% endblock %}
+
+
+{% block content %}
+    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-lg-9 order-2 order-lg-1">
+                    <h1>Confirmer votre email</h1>
+                </div>
+                <div class="col-lg-3 text-right order-1 order-lg-2">
+                    <ul class="breadcrumb justify-content-lg-end">
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Accueil</a></li>
+                        <li class="breadcrumb-item active">Vérification</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <h1></h1>
+    <section class="padding-small">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <p>{% blocktrans %}Nous vous avons envoyé un courrier électronique pour vérification.
+                        Suivez le lien fourni pour finaliser l'inscription processus.
+                        S'il vous plaît contactez-nous si vous ne le recevez pas dans quelques
+                        minutes.{% endblocktrans %}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
