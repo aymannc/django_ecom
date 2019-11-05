@@ -1,0 +1,13 @@
+{% load account %}{% user_display user as user_display %}{% load i18n %}{% autoescape off %}
+    {% blocktrans with site_name=current_site.name site_domain=current_site.domain %}
+        <h4>Bonjour ,</h4>
+        <p>
+            Vous recevez cet e-mail parce que vous ou une autre personne a donné votre adresse e-mail pour confirmer
+            leur
+            compte.<br>
+            Pour confirmer , allez à <a href="{{ activate_url }}" style="color:purple">activation</a><br>
+            Merci !<br>
+            FoxProds . <br>
+        <p>
+    {% endblocktrans %}
+{% endautoescape %}

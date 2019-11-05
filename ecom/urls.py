@@ -18,12 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 
 from core.views import *
+from dashboard.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', include('dashboard.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('', include('allauth.urls')),
+
+    path('facture/<slug:ref>', generate_pdf, name="facture"),
 
     path('', home, name="home"),
     path('contact/', contact, name="contact"),

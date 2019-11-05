@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'tinymce',
 ]
-SITE_ID = 1
+SITE_ID = 2
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

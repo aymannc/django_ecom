@@ -1,11 +1,14 @@
+from allauth.account.signals import email_confirmed
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.shortcuts import reverse
-from tinymce.models import HTMLField
 from django.db.models.signals import post_save
-from allauth.account.signals import email_confirmed
 from django.dispatch import receiver
+from django.shortcuts import reverse
+from django.template.loader import get_template
+from django.utils.html import strip_tags
+from tinymce.models import HTMLField
 
 # Create your models here.
 TAG_CHOICES = [
@@ -325,7 +328,7 @@ class Order(BaseModel):
         return f"{self.ref_code} by {self.user} is ordered :{self.ordered}"
 
     def get_invoice_url(self):
-        return reverse("db:facture", kwargs={"ref": self.ref_code}) if self.order_status == "COMPLETED" else None
+        return reverse("facture", kwargs={"ref": self.ref_code}) if self.order_status == "COMPLETED" else None
 
     def get_total(self):
         total = 0.0
@@ -486,7 +489,10 @@ class UserProfile(BaseModel):
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_profile(sender, **kwargs):
     if kwargs['created']:
-        user_profile = UserProfile.objects.create(user=kwargs['instance'])
+        user = kwargs['instance']
+        user.username = str(user.username).replace('.', '_')
+        user.save()
+        UserProfile.objects.create(user=kwargs['instance'])
 
 
 @receiver(email_confirmed)
@@ -494,5 +500,14 @@ def send_welcome_mail(sender, **kwargs):
     print(kwargs)
     if kwargs['email_address']:
         print("this is the verified mail " + kwargs['email_address'].email)
-
-# post_save.connect(create_profile, sender=settings.AUTH_USER_MODEL)
+        try:
+            email = kwargs['email_address'].email
+            html = get_template('dashboard/welcome_mail.html')
+            html_content = html.render({'email': email})
+            text_content = strip_tags(html_content)
+            msg = EmailMultiAlternatives("Bienvenue chez FoxProds", text_content, settings.EMAIL_HOST,
+                                         [email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+        except Exception as ex:
+            print("Exception ", ex)

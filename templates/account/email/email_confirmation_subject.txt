@@ -1,4 +1,3 @@
 {% load i18n %}
-{% autoescape off %}
-{% blocktrans %}FoxProds : Merci de confirmer votre adresse e-mail{% endblocktrans %}
+{% autoescape off %} : Merci de confirmer votre adresse e-mail
 {% endautoescape %}

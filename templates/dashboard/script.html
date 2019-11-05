@@ -82,30 +82,35 @@
         }
     }
 
-    $(document).ready(function () {
-        $('#example').dataTable({
-            "order": [],
-            'columnDefs': [{
-                'targets':
-                    {% if request.path == '/dashboard/users/' %}
-                        [7],
-                    {% elif request.path == '/dashboard/messages/' %}
-                        [7],
-                    {% elif request.path == '/dashboard/orders/' or request.path == '/dashboard/products/' %}
-                        [5, 6, 7],
-                    {% elif request.path == '/dashboard/newsletter-emails/'%}
-                        [4],
-                    {% elif request.path == '/dashboard/newsletter/'%}
-                        [4,5;],
-                    {% else %}
-                        [''],
-                    {% endif %}
-                'orderable';
-    :
-        false,
-    }]
-    })
-    });
+    try {
+        $(document).ready(function () {
+            $('#example').dataTable({
+                "order": [],
+                'columnDefs': [{
+                    'targets':
+                        {% if request.path == '/dashboard/users/' %}
+                            [6],
+                        {% elif request.path == '/dashboard/messages/' %}
+                            [7],
+                        {% elif request.path == '/dashboard/orders/' or request.path == '/dashboard/products/' %}
+                            [5, 6, 7],
+                        {% elif request.path == '/dashboard/newsletter-emails/'%}
+                            [4],
+                        {% elif request.path == '/dashboard/newsletter/'%}
+                            [4,5;],
+                        {% else %}
+                            [''],
+                        {% endif %}
+                    'orderable';
+        :
+            false,
+        }]
+        })
+        });
+    } catch (e) {
+
+    }
+
     $(".dropdown-menu li a").click(function () {
         var selText = $(this).text();
         $(this).parents('.btn-group').find('.dropdown-toggle').html(selText + ' <span class="caret"></span>');

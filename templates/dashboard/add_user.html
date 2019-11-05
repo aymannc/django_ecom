@@ -4,7 +4,8 @@
     <div class="container mx-auto">
         <div class="container my-4">
             <div class="row mb-3">
-                <h2>Ajouter une utilisateur</h2>
+                <h2>{% if modify %}Modifier
+                    l'utilisatuer {% else %}Ajouter une utilisateur{% endif %}</h2>
             </div>
         </div>
         <div class="col-6 mx-auto">
@@ -57,10 +58,10 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
-            {% if success %}
+            {% if md_succes %}
                 <div class="row" id="success">
                     <div class="alert alert-success col-12 mx-auto" role="alert">
-                        Utilisateur ajouté
+                        Utilisateur Modifié
                     </div>
                 </div>
             {% endif %}
@@ -118,7 +119,9 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-4 mx-auto">
-                            <button class="btn btn-success my-3" type="submit">Ajouter l'utilisatuer</button>
+                            <button class="btn btn-success my-3" type="submit">{% if modify %}Modifier
+                                l'utilisatuer {% else %}Ajouter l'utilisatuer{% endif %}
+                            </button>
                         </div>
                     </div>
                 </form>

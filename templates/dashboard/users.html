@@ -17,8 +17,7 @@
                 <th>Email</th>
                 <th>Active</th>
                 <th>Superuser</th>
-                <th>Telephone</th>
-                <th>Sexe</th>
+                <th>Date inscrite</th>
                 <th>Supprimer</th>
 
             </tr>
@@ -37,7 +36,8 @@
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="ref" value="{{ user.username }}">
-                            <select class="browser-default custom-select" name="visible" onchange="this.form.submit()">
+                            <select class="browser-default custom-select" name="is_active"
+                                    onchange="this.form.submit()">
                                 <option selected>{{ user.is_active }}</option>
                                 {% if user.is_active %}
                                     <option value="0">False</option>
@@ -51,7 +51,8 @@
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="ref" value="{{ user.username }}">
-                            <select class="browser-default custom-select" name="visible" onchange="this.form.submit()">
+                            <select class="browser-default custom-select" name="is_superuser"
+                                    onchange="this.form.submit()">
                                 <option selected>{{ user.is_superuser }}</option>
                                 {% if user.is_active %}
                                     <option value="0">False</option>
@@ -61,24 +62,7 @@
                             </select>
                         </form>
                     </td>
-                    <td>{{ user.user_profile.telephone }}{{ user.user_profile.get_gender_display }}</td>
-                    <td>
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="ref" value="{{ user.username }}">
-                            <select class="browser-default custom-select" name="visible" onchange="this.form.submit()">
-                                <option selected>{{ user.user_profile.get_gender_display }}</option>
-                                {% if user.user_profile.gender == "M" %}
-                                    <option value="F">Female</option>
-                                {% elif user.user_profile.gender == "F" %}
-                                    <option value="M">Male</option>
-                                {% else %}
-                                    <option value="M">Male</option>
-                                    <option value="F">Female</option>
-                                {% endif %}
-                            </select>
-                        </form>
-                    </td>
+                    <td>{{ user.date_joined|date:"d/m/y G:i:s" }}<br></td>
                     <td>
                         <a href="{% url "db:deleteUser" ref=user.username %}"
                            class=" btn btn-danger btn-sm ">Supprimer</a>
