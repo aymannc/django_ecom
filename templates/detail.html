@@ -21,6 +21,13 @@
     </section>
     <section class="product-details">
         <div class="container">
+            <div class="row my-4 ">
+                <div class="col text-center">
+                    <div class="alert alert-danger" role="alert">
+                        Rupture de stock
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="product-images col-lg-6">
                     {% for tag in product.tags.all %}
@@ -86,7 +93,8 @@
                             <h6 class="col ml-5">Quantity : </h6>
                             <div class="col quantity d-flex ">
                                 <div class="dec-btn">-</div>
-                                <input type="text" value="{% if request.GET.quantity %}{{ request.GET.quantity }}{% else %}1{% endif %}"
+                                <input type="text" value="
+                                        {% if request.GET.quantity %}{{ request.GET.quantity }}{% else %}1{% endif %}"
                                        class="quantity-no" name="quantity">
                                 <div class="inc-btn">+</div>
                             </div>

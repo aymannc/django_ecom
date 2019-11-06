@@ -262,6 +262,7 @@ def cart_view(req):
 
 
 def add_to_cart(req, slug):
+    # TODO : check for quantity + view quantity error and disable order button
     item = get_object_or_404(Product, slug=slug)
     order_item = OrderItem(
         product=item,
@@ -275,13 +276,16 @@ def add_to_cart(req, slug):
             if order_item_qs.exists():
                 order_item = order_item_qs[0]
                 quantity = int(req.GET.get('quantity', 1))
-                order_item.quantity += quantity
-                order_item.save()
-                messages.info(req, "This item quantity was updated.")
+                if quantity <= order_item.product.product_quantity_available:
+                    order_item.quantity += quantity
+                    order_item.save()
+                    messages.info(req, "Quantité mise à jour.")
+                else:
+                    messages.error(req, "Error : rupture de stock")
             else:
                 order_item.order = order
                 order_item.save()
-                messages.info(req, "This item was added to your cart.")
+                messages.info(req, "Une article a été ajouté à votre panier.")
 
         else:
             order = Order.objects.create(
@@ -292,7 +296,7 @@ def add_to_cart(req, slug):
             order_item.order = order
             order_item.save()
             order.save()
-            messages.info(req, "This item was added to your cart.")
+            messages.info(req, "Une article a été ajouté à votre panier.")
 
     else:
         try:
@@ -306,13 +310,16 @@ def add_to_cart(req, slug):
             if order_item_qs.exists():
                 order_item = order_item_qs[0]
                 quantity = int(req.GET.get('quantity', 1))
-                order_item.quantity += quantity
-                order_item.save()
-                messages.info(req, "This item quantity was updated.")
+                if quantity <= order_item.product.product_quantity_available:
+                    order_item.quantity += quantity
+                    order_item.save()
+                    messages.info(req, "Quantité mise à jour.")
+                else:
+                    messages.error(req, "Error : rupture de stock")
             else:
                 order_item.order = order
                 order_item.save()
-                messages.info(req, "This item was added to your cart.")
+                messages.info(req, "Une article a été ajouté à votre panier.")
         except KeyError:
             order = Order.objects.create(
                 ref_code=random_ref()
@@ -321,13 +328,19 @@ def add_to_cart(req, slug):
             order_item.save()
             order.save()
             req.session['cart'] = order.id
-            messages.info(req, "This item was added to your cart.")
+            messages.info(req, "Une article a été ajouté à votre panier.")
     return redirect("cart")
 
 
 def increment_item_card(req, id, red):
     item_card = OrderItem.objects.get(id=id)
-    item_card.quantity += 1
+    if 1 <= item_card.product.product_quantity_available:
+        item_card.quantity += 1
+        item_card.save()
+        messages.info(req, "Quantité mise à jour.")
+    else:
+        messages.error(req, "Error : rupture de stock")
+
     item_card.save()
     try:
         return redirect(red, ref=item_card.order.ref_code)
@@ -378,9 +391,10 @@ def orders(req):
 @login_required
 def order_details(req, ref):
     try:
-        order = Order.objects.get(ref_code=ref)
-    except:
-        messages.error(req, "Non valid reference code ")
+        order = Order.objects.get(ref_code=ref, user=req)
+    except Exception as e:
+        print("order_details Exception", e)
+        messages.error(req, "Non valid reference ou pas d'autorisation ")
         return redirect("user-orders")
     context = {
         "order": order,
@@ -929,6 +943,14 @@ def confirmation(req):
                 }
                 html = get_template('dashboard/order_confirmation_email.html')
                 objet = f"COMMANDE {order.ref_code} - EN ATTENTE DU PAIEMENT"
+            else:
+                context = {
+                    "price": order.get_total(),
+                    'name': order.user.get_full_name(),
+                    "ref": order.ref_code
+                }
+                html = get_template('dashboard/order_confirmation_email_phone.html')
+                objet = f"COMMANDE {order.ref_code} - EN ATTENTE DE VALIDATION PAR TÉLÉPHONE"
             html_content = html.render(context)
             text_content = strip_tags(html_content)
             msg = EmailMultiAlternatives(objet, text_content,

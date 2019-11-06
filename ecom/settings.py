@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    # 'livereload',
+    'livereload',
     'core',
     'dashboard',
     'allauth',

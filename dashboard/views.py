@@ -3,6 +3,7 @@ from datetime import timedelta, datetime
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.text import slugify
@@ -30,12 +31,14 @@ def demo(req):
     return HttpResponse("Done")
 
 
+@login_required
 def generate_pdf(req, ref):
     try:
-        order = Order.objects.get(ref_code=ref)
+        user = req.user
+        order = Order.objects.get(ref_code=ref, user=user)
         pdf = render_to_pdf('dashboard/demo.html', {'order': order})
     except:
-        messages.error(req, "Référence non valide")
+        messages.error(req, "Référence non valide ou pas d'autorisation")
         return redirect("user-orders")
     return HttpResponse(pdf, content_type='application/pdf')
 
@@ -54,7 +57,6 @@ def get_sales_values():
             print(order.get_total_coupon)
             total += order.get_total_coupon
         result.append(total)
-    print(result)
     return result
 
 
@@ -94,6 +96,49 @@ def dashboard(req):
     return render(req, "dashboard/index.html", context)
 
 
+def send_canceled_mail(order):
+    try:
+        print("mail", order.user.email)
+        context = {
+            "ref": order.ref_code
+        }
+        html = get_template('dashboard/order_canceled_email.html')
+        objet = f"COMMANDE {order.ref_code} - COMMANDE ANNULÉE"
+        html_content = html.render(context)
+        text_content = strip_tags(html_content)
+        msg = EmailMultiAlternatives(objet, text_content,
+                                     settings.EMAIL_HOST,
+                                     [order.user.email])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+    except Exception as ex:
+        print("send_canceled_mail Exception ", ex)
+
+
+def send_completed_mail(order):
+    try:
+        option = None
+        if "FoxProds" in order.delivery_method.name:
+            option = "FoxProds"
+        elif "AMANA" in order.delivery_method.name:
+            option = "AMANA"
+        context = {
+            "ref": order.ref_code,
+            "option": option,
+        }
+        html = get_template('dashboard/order_completed_email.html')
+        objet = f"COMMANDE {order.ref_code} - COMMANDE VALIDÉ"
+        html_content = html.render(context)
+        text_content = strip_tags(html_content)
+        msg = EmailMultiAlternatives(objet, text_content,
+                                     settings.EMAIL_HOST,
+                                     [order.user.email])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+    except Exception as ex:
+        print("send_canceled_mail Exception ", ex)
+
+
 @staff_member_required
 def commandes(req):
     if req.POST:
@@ -105,12 +150,23 @@ def commandes(req):
             order = Order.objects.get(ref_code=ref)
             result = [k for (k, v) in Order._meta.get_field('order_status').choices if choice == v]
             order.order_status = result[0]
+            if order.order_status == "CANCELED":
+                send_canceled_mail(order)
             if order.order_status == "COMPLETED":
+                # TODO : increes product + add to panier check if quantity available else send mail
+                for item in order.items.all():
+                    if item.product.product_quantity_available >= item.quantity:
+                        item.product.product_quantity_available -= item.quantity
+                        item.product.save()
+                    else:
+                        raise ValueError('rupture de stock')
                 order.complete_date = timezone.now()
+                send_completed_mail(order)
+
             order.save()
         except Exception as e:
-            print(e)
-            messages.error(req, "Une erreur est survenue")
+            print("commandes Exception", e)
+            messages.error(req, "Erreur : " + str(e))
     orders = Order.objects.filter(ordered=True)
     context = {
         "orders": orders,
@@ -121,7 +177,6 @@ def commandes(req):
 
 @staff_member_required
 def db_order_details(req, ref):
-    print("ref ", ref)
     step2 = None
     try:
         order = Order.objects.get(ref_code=ref)
@@ -310,12 +365,11 @@ def db_add_product(req):
 
 @staff_member_required
 def db_product_details(req, ref):
+    # TODO : add modify POST request
     try:
         product = Product.objects.get(slug=ref)
-        print(product.product_images.all())
     except Exception as e:
         product = None
-        print(e)
         messages.error(req, "Une erreur est survenue")
         redirect("db:products")
     context = {
