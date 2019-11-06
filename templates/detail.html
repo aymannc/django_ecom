@@ -21,13 +21,16 @@
     </section>
     <section class="product-details">
         <div class="container">
-            <div class="row my-4 ">
-                <div class="col text-center">
-                    <div class="alert alert-danger" role="alert">
-                        Rupture de stock
+            {% if not product_available %}
+                <div class="row my-4 ">
+                    <div class="col text-center">
+                        <div class="alert alert-danger" role="alert">
+                            Rupture de stock
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
+
             <div class="row">
                 <div class="product-images col-lg-6">
                     {% for tag in product.tags.all %}
@@ -88,27 +91,30 @@
                             </div>
                         {% endfor %}
                     </ul>
-                    <form action="{% url 'add-to-cart' slug=product.slug %}">
-                        <div class="row justify-content-center">
-                            <h6 class="col ml-5">Quantity : </h6>
-                            <div class="col quantity d-flex ">
-                                <div class="dec-btn">-</div>
-                                <input type="text" value="
+                    {% if product_available %}
+                        <form action="{% url 'add-to-cart' slug=product.slug %}">
+                            <div class="row justify-content-center">
+                                <h6 class="col ml-5">Quantity : </h6>
+                                <div class="col quantity d-flex ">
+                                    <div class="dec-btn">-</div>
+                                    <input type="text" value="
                                         {% if request.GET.quantity %}{{ request.GET.quantity }}{% else %}1{% endif %}"
-                                       class="quantity-no" name="quantity">
-                                <div class="inc-btn">+</div>
+                                           class="quantity-no" name="quantity">
+                                    <div class="inc-btn">+</div>
+                                </div>
                             </div>
-                        </div>
-                        <ul class="CTAs list-inline">
-                            <li class="list-inline-item my-2">
-                                <button class="btn btn-template wide"><i class="icon-cart"></i>Add to Cart</button>
-                            </li>
-                            <li class="list-inline-item my-2"><a href="{% url 'add-to-favorite' slug=product.slug %}"
-                                                                 class="btn btn-template-outlined wide"
-                                                                 style=" margin-bottom: 0px;"> <i
-                                    class="fa fa-heart-o"></i>Add to wishlist</a></li>
-                        </ul>
-                    </form>
+                            <ul class="CTAs list-inline">
+                                <li class="list-inline-item my-2">
+                                    <button class="btn btn-template wide"><i class="icon-cart"></i>Add to Cart</button>
+                                </li>
+                                <li class="list-inline-item my-2"><a
+                                        href="{% url 'add-to-favorite' slug=product.slug %}"
+                                        class="btn btn-template-outlined wide"
+                                        style=" margin-bottom: 0px;"> <i
+                                        class="fa fa-heart-o"></i>Add to wishlist</a></li>
+                            </ul>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

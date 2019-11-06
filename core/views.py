@@ -34,6 +34,7 @@ def home(req):
 def product_details(req, slug):
     product = get_object_or_404(Product, slug=slug)
     context = {
+        "product_available": product.product_quantity_available,
         "product": product,
         "share_string": quote_plus(product.product_description)
     }
@@ -334,14 +335,12 @@ def add_to_cart(req, slug):
 
 def increment_item_card(req, id, red):
     item_card = OrderItem.objects.get(id=id)
-    if 1 <= item_card.product.product_quantity_available:
+    if item_card.product.product_quantity_available > item_card.quantity:
         item_card.quantity += 1
         item_card.save()
         messages.info(req, "Quantité mise à jour.")
     else:
         messages.error(req, "Error : rupture de stock")
-
-    item_card.save()
     try:
         return redirect(red, ref=item_card.order.ref_code)
     except:
