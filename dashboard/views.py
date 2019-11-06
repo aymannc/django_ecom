@@ -3,15 +3,12 @@ from datetime import timedelta, datetime
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from django.utils.html import strip_tags
 from django.utils.text import slugify
 from django.utils.timezone import make_aware
 
 from core.forms import *
-from core.models import *
 from dashboard.forms import *
 from .utils import render_to_pdf, HttpResponse
 
@@ -478,7 +475,7 @@ def db_user_details(req, ref):
         if profile_form.is_valid() and user_form.is_valid() and image_form.is_valid() and address_form.is_valid():
             try:
                 save_user(user_form, profile_form, address_form, image_form)
-                messages.success(req, "Utilisateur ajoute")
+                messages.success(req, "Utilisateur modifié")
                 success = True
             except Exception as e:
                 print("Exception", e)

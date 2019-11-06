@@ -4,13 +4,11 @@ from urllib.parse import quote_plus
 from allauth.account.forms import ChangePasswordForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import FieldDoesNotExist, Q
 from django.forms.models import model_to_dict
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from django.utils.html import strip_tags
 
 from .forms import *
 from .models import *
@@ -922,9 +920,21 @@ def confirmation(req):
         order.order_status = "ON HOLD"
         order.save()
         try:
-            text_content = strip_tags("hello")
-            msg = EmailMultiAlternatives("welcome", text_content, settings.EMAIL_HOST, to=order.user.email)
-            msg.attach_alternative("<br>hello</br>", "text/html")
+            email = order.user.email
+            if order.payment_method.name == "Virement bancaire":
+                context = {
+                    "price": order.get_total(),
+                    'name': order.user.get_full_name(),
+                    "ref": order.ref_code
+                }
+                html = get_template('dashboard/order_confirmation_email.html')
+                objet = f"COMMANDE {order.ref_code} - EN ATTENTE DU PAIEMENT"
+            html_content = html.render(context)
+            text_content = strip_tags(html_content)
+            msg = EmailMultiAlternatives(objet, text_content,
+                                         settings.EMAIL_HOST,
+                                         [email])
+            msg.attach_alternative(html_content, "text/html")
             msg.send()
         except Exception as e:
             print("Couldn't send the mail ", e)

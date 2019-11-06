@@ -472,8 +472,7 @@ class NewsLetter(BaseModel):
 
 
 class UserProfile(BaseModel):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='user_profile', on_delete=models.CASCADE,
-                                )
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='user_profile', on_delete=models.CASCADE)
     gender = models.CharField(
         max_length=8,
         choices=GENDER_CHOICES,
