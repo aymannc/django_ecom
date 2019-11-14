@@ -5,12 +5,12 @@
         <div class="container">
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
-                    <h1>Your addresses</h1>
+                    <h1>Vos adresses</h1>
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
-                        <li class="breadcrumb-item active">Your addresses</li>
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Accueil</a></li>
+                        <li class="breadcrumb-item active">Vos adresses</li>
                     </ul>
                 </div>
             </div>
@@ -23,33 +23,31 @@
                 {% show_profile_sidebar %}
                 <div class="col-lg-8 col-xl-9 pl-lg-3">
                     <div class="block-header mb-5">
-                        <h5>Address </h5>
+                        <h5>Adresse </h5>
                     </div>
                     <div class="container">
                         <div class="row">
                             <table class="table table-hover table-responsive-md">
                                 <thead>
                                 <tr>
-                                    <th>Address</th>
+                                    <th>Adresse</th>
                                     <th class="text-center" colspan="2">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for address in user_addresses %}
+                                {% for Adresse in user_addresses %}
                                     <tr>
                                         <td>
-                                            {% if address.default %}
-                                                <span class="text-success">Default user address</span><br>
+                                            {% if Adresse.default %}
+                                                <span class="text-success">Adresse d'utilisateur par défaut</span><br>
                                             {% endif %}
-                                            <small><strong>Full Name: </strong> {{ address.full_name }}<br>
-                                                <strong>Phone number:</strong> {{ address.phone_number }}
-                                                <br><strong>Street address: </strong> {{ address.street_address }}<br>
-                                                {% if address.societe %}
-                                                    <strong>Societe: </strong> {{ address.societe }}<br>{% endif %}
-                                                {% if address.tva %}
-                                                    <strong>tva: </strong> {{ address.tva }}<br>{% endif %}
-                                                {{ address.zip }} ,{{ address.city }} ,{{ address.state }}
-                                                ,{{ address.country }}</small>
+                                            <small><strong>Nom complet: </strong> {{ Adresse.full_name }}<br>
+                                                <strong>Téléphone:</strong> {{ Adresse.phone_number }}
+                                                <br><strong>Adresse: </strong> {{ Adresse.street_address }}<br>
+                                                {% if Adresse.societe %}
+                                                    <strong>Société: </strong> {{ Adresse.societe }}<br>{% endif %}
+                                                {{ Adresse.zip }} ,{{ Adresse.city }} ,{{ Adresse.state }}
+                                                ,{{ Adresse.country }}</small>
 
                                         </td>
                                         <td>
@@ -57,14 +55,14 @@
                                             <form method="post">
 
                                                 {% csrf_token %}
-                                                <input type="hidden" name="id" value="{{ address.id }}">
+                                                <input type="hidden" name="id" value="{{ Adresse.id }}">
                                                 <input type="submit" class="btn btn-info btn-sm mb-1" name="action"
-                                                       value="Modify"><br>
+                                                       value="Modifier"><br>
                                                 <input type="submit" class="btn btn-danger btn-sm mb-1" name="action"
-                                                       value="Delete"><br>
+                                                       value="Supprimer"><br>
                                                 <input type="submit" class="btn btn-primary btn-sm mb-1" name="action"
-                                                       value="Default">
-                                                <a name="addressform"></a>
+                                                       value="Par défaut">
+                                                <a name="Adresseform"></a>
                                             </form>
                                         </td>
                                         {#                                        <td><a href="#" class="btn btn-danger btn-sm ">Delete</a></td>#}
@@ -75,12 +73,12 @@
                         </div>
                         <div class="block-header mb-5 mt-3">
                             {% if modify %}
-                                <h5>Modify address</h5>{% else %}<h5>New address</h5>
+                                <h5>Modifier l'adresse</h5>{% else %}<h5>Nouvelle adresse</h5>
                             {% endif %}
 
                         </div>
                         <div class="form-group col-12 mt-3 ml-3">
-                            <div id="shippingAddress" aria-expanded="false" style="">
+                            <div id="shippingAdresse" aria-expanded="false" style="">
                                 <div class="row">
                                     <form method="post">
                                         {% if modify %}
@@ -117,8 +115,7 @@
                                         <div class="row">
                                             <div class="form-group col-12 mt-3">
                                                 <button type="submit" class="btn btn-template wide"><i
-                                                        class="fa fa-save"></i>Save
-                                                    changes
+                                                        class="fa fa-save"></i>Sauvegarder
                                                 </button>
                                             </div>
                                         </div>

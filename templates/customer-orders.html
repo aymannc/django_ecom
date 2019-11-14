@@ -2,12 +2,11 @@
 {% load mytags %}
 {% block content %}
     <!-- Hero Section-->
-    <section class="row gray-bg" style=" padding-bottom: 10px; padding-top: 30px; margin-top: 0px; ">
+    <section class="row gray-bg" >
         <div class="container">
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
-                    <h1>Your orders</h1>
-                    <p class="lead">Your orders in one place.</p>
+                    <h2>Vos commandes</h2>
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
@@ -27,10 +26,10 @@
                     <table class="table table-hover table-responsive-md">
                         <thead>
                         <tr>
-                            <th>Order reference</th>
+                            <th>Référence</th>
                             <th>Date</th>
                             <th>Total</th>
-                            <th>Status</th>
+                            <th>Statut</th>
                             <th class="text-center" colspan="3">Actions</th>
                         </tr>
                         </thead>
@@ -55,16 +54,16 @@
 
                                     {% if  action == "modify" %}
                                         <td><a href="{% url "order-modify"  ref=order.ref_code %}"
-                                               class="btn btn-warning btn-sm ">Modify</a></td>
+                                               class="btn btn-warning btn-sm ">Modifier</a></td>
                                     {% elif  action == "cancel" %}
                                         <td><a href="{% url "order-cancel"  ref=order.ref_code %}"
-                                               class="btn btn-danger btn-sm">Cancel</a></td>
+                                               class="btn btn-danger btn-sm">Annuler</a></td>
                                     {% elif  action == "track" %}
                                         <td><a href="{% url "order-track"  ref=order.ref_code %}"
-                                               class="btn btn-success btn-sm">Track</a></td>
+                                               class="btn btn-success btn-sm">Suivre</a></td>
                                     {% elif  action == "re-order" %}
                                         <td><a href="{% url "order-reorder"  ref=order.ref_code %}"
-                                               class="btn btn-primary btn-sm">Reorder</a></td>
+                                               class="btn btn-primary btn-sm">Commander</a></td>
                                     {% endif %}
                                 {% endfor %}
                             </tr>

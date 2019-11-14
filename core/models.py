@@ -1,4 +1,4 @@
-from allauth.account.signals import email_confirmed
+from allauth.account.signals import email_confirmed, user_logged_in
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.validators import MinValueValidator
@@ -20,16 +20,16 @@ TAG_CHOICES = [
     ('INFO', 'info'),
 ]
 STATUS_CHOICES = [
-    ('ON HOLD', 'On Hold'),
-    ('PROCESSING', 'Processing'),
-    ('CANCELED', 'Canceled'),
-    ('FAILED', 'Failed'),
-    ('COMPLETED', 'Completed'),
-    ('REFUNDED', 'Refunded')
+    ('ON HOLD', 'En attente'),
+    ('PROCESSING', 'En traitement'),
+    ('CANCELED', 'Annulé'),
+    ('FAILED', 'Échoué'),
+    ('COMPLETED', 'Terminé'),
+    ('REFUNDED', 'Remboursé')
 ]
 GENDER_CHOICES = [
-    ('F', 'Female'),
-    ('M', 'Male'),
+    ('F', 'Femelle'),
+    ('M', 'Mâle'),
 ]
 
 
@@ -63,7 +63,7 @@ class Category(BaseModel):
     is_featured = models.BooleanField(default=False)
     parent_category = models.ForeignKey(
         'self', on_delete=models.SET_NULL, related_name='child_categories', null=True, blank=True)
-    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    image = models.ForeignKey(Image, default=None, blank=True, on_delete=models.CASCADE)
     tags = models.ManyToManyField("Tag", related_name='categories', blank=True)
 
     class Meta:
@@ -79,7 +79,11 @@ class Category(BaseModel):
         return reverse("shop_by_category", kwargs={"slug": self.slug})
 
     def get_featured_products(self):
-        return self.products.all().filter(visible=True)
+        if self.parent_category:
+            return None
+        else:
+            return True
+        # return self.products.all().filter(visible=True)
 
     def get_parent_products(self):
         if self.parent_category:
@@ -99,6 +103,8 @@ class Banner(BaseModel):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
     image = models.ImageField()
+    banner_shown = models.PositiveIntegerField(default=0)
+    banner_clicked = models.PositiveIntegerField(default=0)
     show_date = models.DateTimeField(auto_now_add=True)
     expire_date = models.DateTimeField(auto_now_add=True)
 
@@ -107,15 +113,6 @@ class Banner(BaseModel):
 
     def __str__(self):
         return self.title
-
-
-class BannerHistory(BaseModel):
-    banner = models.OneToOneField(Banner, on_delete=models.CASCADE)
-    banner_shown = models.PositiveIntegerField(default=0)
-    banner_clicked = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        db_table = "banner_history"
 
 
 class Product(BaseModel):
@@ -363,7 +360,7 @@ class Order(BaseModel):
 
     def get_product_actions(self):
         if self.order_status == "ON HOLD":
-            return ["re-order", "modify", "cancel"]
+            return ["hello", "modify", "cancel"]
         elif self.order_status == "PROCESSING":
             return ["re-order", "cancel"]
         elif self.order_status == "COMPLETED":
@@ -494,9 +491,20 @@ def create_profile(sender, **kwargs):
         UserProfile.objects.create(user=kwargs['instance'])
 
 
+@receiver(user_logged_in)
+def check_session(sender, **kwargs):
+    print(kwargs)
+    try:
+        order_id = kwargs['request'].session['cart']
+        del kwargs['request'].session['cart']
+        kwargs['request'].session.modified = True
+        Order.objects.filter(id=order_id, ordered=False).update(user=kwargs['user'])
+    except Exception as e:
+        print("Exception check_session models", e)
+
+
 @receiver(email_confirmed)
 def send_welcome_mail(sender, **kwargs):
-    print(kwargs)
     if kwargs['email_address']:
         print("this is the verified mail " + kwargs['email_address'].email)
         try:

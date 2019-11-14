@@ -8,9 +8,8 @@
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ product.product_categorie.get_absolute_url }}">{{ product.product_categorie }}</a>
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+                        <li class="breadcrumb-item"><a href="{{ category.get_absolute_url }}">{{ category }}</a>
                         </li>
                         <li class="breadcrumb-item active">{{ product.product_name }}</li>
 
@@ -105,13 +104,13 @@
                             </div>
                             <ul class="CTAs list-inline">
                                 <li class="list-inline-item my-2">
-                                    <button class="btn btn-template wide"><i class="icon-cart"></i>Add to Cart</button>
+                                    <button class="btn btn-template wide"><i class="icon-cart"></i>Ajouter au panier</button>
                                 </li>
                                 <li class="list-inline-item my-2"><a
                                         href="{% url 'add-to-favorite' slug=product.slug %}"
-                                        class="btn btn-template-outlined wide"
+                                        class="btn btn-danger btn-template-outlined text-white wide"
                                         style=" margin-bottom: 0px;"> <i
-                                        class="fa fa-heart-o"></i>Add to wishlist</a></li>
+                                        class="fa fa-heart-o"></i></a></li>
                             </ul>
                         </form>
                     {% endif %}
@@ -150,7 +149,7 @@
         </div>
         <div class="container-fluid">
             <div class="share-product gray-bg d-flex align-items-center justify-content-center flex-column flex-md-row">
-                <strong class="text-uppercase">Share this on</strong>
+                <strong class="text-uppercase">Partager sur</strong>
                 <ul class="list-inline text-center">
                     <li class="list-inline-item"><a
                             href="https://twitter.com/home?status={{ share_string }}%20{{ request.build_absolute_uri }}"
@@ -189,24 +188,24 @@
             </section>
         {% endif %}
     {% endwith %}
+    {% if category %}
+        <section class="related-products" style="padding:30px 0px">
+            <div class="container">
+                <header class="text-center" style="margin-bottom: 40px;">
+                    <h2>
+                        <small>Tu pourrais aussi aimer</small>
+                        AUTRES PRODUITS DANS LA MÊME CATÉGORIE
+                    </h2>
+                </header>
+                <div class="row">
+                    {% for p in category.products.all %}
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-8 mx-auto my-2">
+                            {% include "productCard.html" with  product=p %}
+                        </div>
+                    {% endfor %}
+                </div>
 
-    <section class="related-products" style="padding:30px 0px">
-        <div class="container">
-            <header class="text-center" style="margin-bottom: 40px;">
-                <h2>
-                    <small>Tu pourrais aussi aimer</small>
-                    AUTRES PRODUITS DANS LA MÊME CATÉGORIE
-                </h2>
-            </header>
-            <div class="row">
-                {% for p in product.product_categorie.products.all %}
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-8 mx-auto my-2">
-                        {% include "productCard.html" with  product=p %}
-                    </div>
-                {% endfor %}
             </div>
-
-        </div>
-    </section>
-
+        </section>
+    {% endif %}
 {% endblock content %}

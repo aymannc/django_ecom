@@ -22,9 +22,9 @@
                 class="text-primary">{{ order.get_total_coupon }}DH</strong></div>
         <!-- call to actions-->
         <div class="dropdown-item CTA d-flex">
-            <a href="{% url 'cart' %}" class="btn btn-template wide">View Cart</a>
-            <a href="{% url 'checkout' %}" class="btn btn-template wide">Checkout</a>
+            <a href="{% url 'cart' %}" class="btn btn-template wide">Voir le panier</a>
+            <a href="{% url 'checkout' %}" class="btn btn-template wide">Commander</a>
         </div>
     {% else %}
-        <p>Cart Is Empty</p>
+        <p>Le panier est vide</p>
     {% endif %}

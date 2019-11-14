@@ -34,7 +34,7 @@ urlpatterns = [
     path('message-details/<slug:ref>', db_messages_details, name="message-details"),
     path('deleteMessage/<slug:ref>', db_delete_message, name="deleteMessage"),
 
-    path('newsletter/', newsletter, name="newsletter"),
+    path('newsletter/', db_newsletter, name="newsletter"),
     path('add-newsletter/', add_newsletter, name="add-newsletter"),
     path('newsletter-details/<slug:ref>', newsletter_details, name="newsletter-details"),
     path('send-newsletter/<slug:ref>', send_newsletter, name="send-newsletter"),

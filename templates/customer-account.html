@@ -7,12 +7,12 @@
         <div class="container">
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
-                    <h1>Your profile</h1>
+                    <h1>Votre profil</h1>
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
-                        <li class="breadcrumb-item active">Your profile</li>
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Accueil</a></li>
+                        <li class="breadcrumb-item active">Votre profil</li>
                     </ul>
                 </div>
             </div>
@@ -25,7 +25,7 @@
                 {% show_profile_sidebar %}
                 <div class="col-lg-8 col-xl-9 pl-lg-3">
                     <div class="block-header mb-5">
-                        <h5>Change password </h5>
+                        <h5>Changer le mot de passe </h5>
                     </div>
                     <div class="row">
                         <div class="col-lg-6 mx-auto">
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class="block-header mb-5">
-                        <h5>Change User Picture</h5>
+                        <h5>Changer l'image de l'utilisateur</h5>
                     </div>
                     <div class="row">
                         {% if image.errors %}
@@ -91,27 +91,27 @@
                                 <div class="form-group">
                                     <label for="street" class="form-label mb-3">
                                         {% with request.user.user_profile.profile_picture.get_absolute_url  as url %}
-                                            Current: <a
+                                            Photo actuelle: <a
                                                 href="{{ url }}">
                                             <img src="{{ url }}"
                                                  width="50px">
                                         </a>
                                         {% endwith %}
                                     </label><br>
-                                    <label for="street" class="form-label mb-3">Chose new one : </label>
+                                    <label for="street" class="form-label mb-3">Choisissez un nouveau : </label>
                                     {{ image.as_p }}
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 text-center">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save changes
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Sauvegarder
                                 </button>
                             </div>
                         </div>
                     </form>
                     <div class="block-header mb-5">
-                        <h5>Personal details</h5>
+                        <h5>Détails personnels</h5>
                     </div>
                     <div class="row">
                         {% if userprofile.errors %}
@@ -135,7 +135,7 @@
                         <div class="row">
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
-                                    <label for="country" class="form-label">{{ userprofile.gender.label }}</label>
+                                    <label for="country" class="form-label">Sexe :</label>
                                     {{ userprofile.gender }}
                                 </div>
                             </div>
@@ -143,32 +143,32 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="firstname" class="form-label">{{ userprofile.firstname.label }}</label>
+                                    <label for="firstname" class="form-label">Prénom :</label>
                                     {{ userprofile.firstname }}
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="lastname" class="form-label">{{ userprofile.lastname.label }}</label>
+                                    <label for="lastname" class="form-label">Nom :</label>
                                     {{ userprofile.lastname }}
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="phone" class="form-label">{{ userprofile.telephone.label }}</label>
+                                    <label for="phone" class="form-label">Téléphone :</label>
                                     {{ userprofile.telephone }}
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="email" class="form-label">{{ userprofile.email.label }}</label>
+                                    <label for="email" class="form-label">Email :</label>
                                     {{ userprofile.email }}
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 text-center">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save changes
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Sauvegarder
                                 </button>
                             </div>
 

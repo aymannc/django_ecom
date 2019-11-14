@@ -11,12 +11,12 @@
         <div class="container">
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
-                    <h1>{% trans "Sign In" %}</h1>
+                    <h1>{% trans "Se Connecter" %}</h1>
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
-                        <li class="breadcrumb-item active">Sign In</li>
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Acceuil</a></li>
+                        <li class="breadcrumb-item active">Se connecter</li>
                     </ul>
                 </div>
             </div>
@@ -60,8 +60,8 @@
                         {% include "socialaccount/snippets/login_extra.html" %}
 
                     {% else %}
-                        <p>{% blocktrans %}If you have not created an account yet, then please
-                            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+                        <p>{% blocktrans %}Si vous n'avez pas encore créé un compte, veuillez d'abord
+                            <a href="{{ signup_url }}">inscrire</a> .{% endblocktrans %}</p>
                     {% endif %}
 
                     <form class="login" method="POST" action="{% url 'account_login' %}">
@@ -78,7 +78,7 @@
 
                         <div class="form-group text-center">
                             <a class="float-left"
-                               href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}
+                               href="{% url 'account_reset_password' %}">{% trans "Mot de passe oublié?" %}
                             </a>
                             <button type="submit" class="btn btn-primary float-right"><i class="fa fa-sign-in"></i> Log
                                 in

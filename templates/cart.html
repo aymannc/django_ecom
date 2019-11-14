@@ -10,8 +10,8 @@
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-                        <li class="breadcrumb-item active">Shopping cart</li>
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+                        <li class="breadcrumb-item active">Panier</li>
                     </ul>
                 </div>
             </div>
@@ -84,8 +84,8 @@
             </div>
             <div class="container">
                 <div class="CTAs d-flex align-items-center justify-content-center justify-content-md-end flex-column flex-md-row">
-                    <a href="{% url 'shop' %}" class="btn btn-template-outlined wide">Continuer mes achats</a><a
-                        href="#" class="btn btn-template wide">Mise à jour panier</a></div>
+                    <a href="{% url 'shop' %}" class="btn btn-template wide">Continuer mes achats</a>
+                </div>
             </div>
         </section>
         <!-- Order Details Section-->
@@ -98,6 +98,10 @@
                                 <h6 class="text-uppercase">Vous avez un code promo ?</h6>
                             </div>
                             <div class="block-body">
+                                {% if order.coupon %}
+                                    <p>Votre coupon actuel: <strong class="btn btn-primary ml-3">{{ order.coupon }}</strong></p>
+                                {% endif %}
+
                                 <p>Si vous avez un code de réduction, veuillez le saisir dans la case ci-dessous.</p>
                                 <form method="post">
                                     <div class="form-group d-flex">

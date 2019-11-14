@@ -20,6 +20,44 @@
         } catch (e) {
             console.log(e)
         }
+        {% if request.path == '/profilee/' %}
+            try {
+                let y = document.getElementsByClassName("form-label");
+                y[0].textContent = "Mot de passe actuel";
+                y[1].textContent = "Nouveau mot de passe";
+                y[2].textContent = "Répétez le nouveau mot de passe";
+            } catch (e) {
+                console.log(e)
+            }
+        {% elif request.path == '/login/' %}
+            try {
+                let y = document.getElementsByClassName("form-label");
+                y[0].textContent = "Email";
+                y[1].textContent = "Mot de passe";
+                y[2].textContent = "Se souvenir de moi ";
+            } catch (e) {
+                console.log(e)
+            }
+        {% elif request.path == '/signup/' %}
+            try {
+                let y = document.getElementsByClassName("control-label");
+                y[0].textContent = "Email";
+                y[1].textContent = "Mot de passe";
+                y[2].textContent = "Mot de passe (encore)";
+            } catch (e) {
+                console.log(e)
+            }
+        {% elif request.path == '/password/reset/key/7-set-password/' %}
+            console.log("here");
+            try {
+                let y = document.getElementsByClassName("form-label");
+                y[0].textContent = "Mot de passe";
+                y[1].textContent = "Mot de passe (encore)";
+            } catch (e) {
+                console.log(e)
+            }
+        {% endif %}
+
     };
 
     function myFunction() {
@@ -36,17 +74,22 @@
     function func() {
         try {
             document.getElementById("id_password1").className = "form-control";
-        } catch (err) {}
+        } catch (err) {
+        }
         try {
             document.getElementById("id_password2").className = "form-control";
-        } catch (err) {}
+        } catch (err) {
+        }
         try {
             document.getElementById("id_oldpassword").className = "form-control";
-        } catch (err) {}
+        } catch (err) {
+        }
         try {
             document.getElementById("id_email").className = "form-control";
-        } catch (err) {}
+        } catch (err) {
+        }
     }
+
     function is_changed() {
         document.getElementById("changed").value = "True";
     }

@@ -17,7 +17,7 @@
     <section class="categories" style="padding-top:10px;">
         <div class="container">
             <header class="text-center">
-                <h2 class="text">Découvrez nos catégories</h2>
+                <h2 class="text-uppercase">Nos catégories populaires</h2>
             </header>
             <div class="row text-left mt-3">
                 {% for category in categories %}
@@ -25,41 +25,37 @@
                         <a href="{{ category.get_absolute_url }}">
                             <div class="card">
                                 <div class="view overlay hm-white-slight z-depth-1">
-                                    <div style=" background: url(media/{{ category.image }}) no-repeat center center;-webkit-background-size: cover;height: 200px;"></div>
+                                    <div style=" background: url({{ category.image.get_absolute_url }}) no-repeat center center;-webkit-background-size: cover;height: 200px;"></div>
                                 </div>
                                 <div class="card-body">
                                     <div class="content">
-                                        <h3 class="h5">{{ category.name }}</h3>
+                                        <h3 class="h5 text-primary text-center">{{ category.name }}</h3>
                                     </div>
                                 </div>
                             </div>
+                        </a>
                     </div>
                 {% endfor %}
             </div>
+        </div>
     </section>
     <!-- Collection -->
-    {% for category in categories %}
-        {% if category.products.count %}
-            <section class="collection {% if forloop.counter|divisibleby:2 %}{% else %}gray-bg{% endif %}" style=" padding-bottom: 10px;">
-                <div class="container">
-                    <header class="text-center">
-                        <h2 class="text-uppercase">
-                            <small>PRODUITS POPULAIRES</small>
-                            {{ category.name }}
-                        </h2>
-                    </header>
-                    <div class="row">
-                        {% for product in category.get_featured_products %}
-                            <div class="col-8 col-md-4 col-lg-3 mb-3 mx-auto">
-                                {% include "productCard.html" %}
-                            </div>
-                        {% endfor %}
 
+
+    <section class="collection gray-bg " style=" padding-top: 20px;">
+        <div class="container">
+            <header class="text-center">
+                <h2 class="text-uppercase">Nos PRODUITS POPULAIRES</h2>
+            </header>
+            <div class="row">
+                {% for product in featured_products %}
+                    <div class="col-8 col-md-4 col-lg-3 mb-3 mx-auto">
+                        {% include "productCard.html" %}
                     </div>
-                </div>
-            </section>
-        {% endif %}
-    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
     {#    <!-- Blog Section-->#}
     {#    <section class="blog gray-bg">#}
     {#        <div class="container">#}

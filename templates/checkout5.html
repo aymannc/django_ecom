@@ -4,12 +4,12 @@
         <div class="container">
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
-                    <h1>Order confirmed</h1>
+                    <h1>Commande enregistrée</h1>
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
                         <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
-                        <li class="breadcrumb-item active">Order confirmed</li>
+                        <li class="breadcrumb-item active">Commande</li>
                     </ul>
                 </div>
             </div>
@@ -19,7 +19,7 @@
     <section class="checkout">
         <div class="container">
             <div class="confirmation-icon"><i class="fa fa-check"></i></div>
-            <h2>Votre commande est confirmée.</h2>
+            <h2>Votre commande a été sauvegardée.</h2>
             <p class="mb-5">Un e-mail vous a été envoyé à l'adresse {{ user.email }}</p>
             <p><a href="{% url "user-orders" %}" class="btn btn-template wide">Voir ou gérer votre commande</a></p>
         </div>

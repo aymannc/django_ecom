@@ -6,41 +6,43 @@
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
                     {% if change %}
-                        <h3>Update Payment Method</h3>
+                        <h3>Modifier le mode de payment</h3>
                     {% else %}
-                        <h1>Checkout</h1>
-                        <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                        <h1>Mode de payment</h1>
+                        <p class="lead">Vous avez actuellement {% cart_count %} article (s) dans votre panier</p>
                     {% endif %}
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Accueil</a></li>
                         {% if change %}
-                            <li class="breadcrumb-item active">Update Payment Method</li>
+                            <li class="breadcrumb-item active">Modifier le mode de payment</li>
                         {% else %}
-                            <li class="breadcrumb-item active">Payment Method</li>
+                            <li class="breadcrumb-item active">Mode de payment</li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Checkout Forms-->
+    <!-- Mode de payment Forms-->
     <section class="checkout">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 {% if change %} offset-2 {% endif %}">
                     {% if change %}
                         <div class="block-header mb-2">
-                            <h6 class="text-uppercase">Update Delivery Method</h6>
+                            <h6 class="text-uppercase">Modifier le mode de livraison</h6>
                         </div>
                     {% else %}
                         <ul class="nav nav-pills">
-                            <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Address</a></li>
-                            <li class="nav-item"><a href={% url "delivery" %} class="nav-link">Delivery Method </a></li>
-                            <li class="nav-item"><a href={% url "payment" %} class="nav-link active">Payment Method </a>
+                            <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Adresse</a></li>
+                            <li class="nav-item"><a href={% url "delivery" %} class="nav-link">Mode de livraison </a>
                             </li>
-                            <li class="nav-item"><a href="#" class="nav-link disabled">Order Review</a></li>
+                            <li class="nav-item"><a href={% url "payment" %} class="nav-link active">Mode de
+                                payment </a>
+                            </li>
+                            <li class="nav-item"><a href="#" class="nav-link disabled">Commande</a></li>
                         </ul>
                     {% endif %}
                     {% if payment_methods %}
@@ -71,10 +73,10 @@
                                 <div class="CTAs d-flex justify-content-between flex-column flex-lg-row">
                                     <a href="{% url "payment" %} " class="btn btn-template-outlined wide prev"><i
                                             class="fa fa-angle-left"></i>Étape 1</a>
-                                    <button type="submit " form="paymentform" class="btn btn-template wide">Order Review
-                                        <i
-                                                class="fa fa-angle-right"></i></button>
-
+                                    <button type="submit " form="paymentform" class="btn btn-template wide">
+                                        Revue de commande
+                                        <i class="fa fa-angle-right"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -116,8 +118,8 @@
                                 </form>
 
                                 <div class="CTAs d-flex justify-content-between flex-column flex-lg-row">
-                                    <a href="checkout1.html" class="btn btn-template-outlined wide prev"><i
-                                            class="fa fa-angle-left"></i>Back to Address</a>
+                                    <a href="{% url "delivery" %}" class="btn btn-template-outlined wide prev"><i
+                                            class="fa fa-angle-left"></i>Mode de livraison</a>
                                     <button type="submit " form="paymentform" class="btn btn-template wide">Etape 2 <i
                                             class="fa fa-angle-right"></i></button>
 

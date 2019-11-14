@@ -5,13 +5,13 @@
         <div class="container">
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
-                    <h1>Checkout</h1>
-                    <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                    <h1>Votre commande</h1>
+                    <p class="lead">Vous avez actuellement {% cart_count %} article (s) dans votre panier</p>
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
-                        <li class="breadcrumb-item active">Checkout</li>
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Accueil</a></li>
+                        <li class="breadcrumb-item active">Commande</li>
                     </ul>
                 </div>
             </div>
@@ -23,10 +23,11 @@
             <div class="row">
                 <div class="col-lg-8">
                     <ul class="nav nav-pills">
-                        <li class="nav-item"><a href="{% url "checkout" %" class="nav-link">Address</a></li>
-                    <li class=" nav-item"><a href="{% url "delivery" %}" class="nav-link">Delivery Method </a></li>
-                        <li class="nav-item"><a href="{% url "payment" %}" class="nav-link">Payment Method </a></li>
-                        <li class="nav-item"><a href="{% url "overview" %}" class="nav-link active">Order Review</a>
+                        <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Adresse</a></li>
+                        <li class=" nav-item"><a href="{% url "delivery" %}" class="nav-link">Mode de livraison </a>
+                        </li>
+                        <li class="nav-item"><a href="{% url "payment" %}" class="nav-link">Mode de paiement </a></li>
+                        <li class="nav-item"><a href="{% url "overview" %}" class="nav-link active">Commande</a>
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -155,8 +156,8 @@
                                 </label>
                             </div>
                             <div class="CTAs d-flex justify-content-between flex-column flex-lg-row"><a
-                                    href="checkout3.html" class="btn btn-template-outlined wide prev"><i
-                                    class="fa fa-angle-left"></i>Back to payment method</a>
+                                    href="{% url "payment" %}" class="btn btn-template-outlined wide prev"><i
+                                    class=" fa fa-angle-left"></i>Mode de payment</a>
                                 <a href="{% url "confirmation" %}" class="btn btn-template wide next">Commande<i
                                         class="fa fa-angle-right"></i></a></div>
                         </div>

@@ -6,13 +6,13 @@
         <div class="container">
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
-                    <h1>Checkout</h1>
-                    <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                    <h1>Adresse</h1>
+                    <p class="lead">Vous avez actuellement {% cart_count %} article (s) dans votre panier</p>
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-                        <li class="breadcrumb-item active">Checkout</li>
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+                        <li class="breadcrumb-item active">Adresse</li>
                     </ul>
                 </div>
             </div>
@@ -24,10 +24,10 @@
             <div class="row">
                 <div class="col-lg-8">
                     <ul class="nav nav-pills">
-                        <li class="nav-item"><a href="checkout1.html" class="nav-link active">Address</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link disabled">Delivery Method </a></li>
-                        <li class="nav-item"><a href="#" class="nav-link disabled">Payment Method </a></li>
-                        <li class="nav-item"><a href="#" class="nav-link disabled">Order Review</a></li>
+                        <li class="nav-item"><a href="checkout1.html" class="nav-link active">Adresse</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link disabled">Mode de livraison </a></li>
+                        <li class="nav-item"><a href="#" class="nav-link disabled">Mode de paiement </a></li>
+                        <li class="nav-item"><a href="#" class="nav-link disabled">Commande</a></li>
                     </ul>
                     <div class="tab-content">
                         <div id="address" class="active tab-block">
@@ -82,7 +82,7 @@
                                     {% csrf_token %}
                                     {% for field in form %}
                                         <div class="form-group col-md-6">
-                                            <label for="firstname" class="form-label">{{ field.label }}</label>
+                                            <label for="{{ field.label }}" class="form-label">{{ field.label }}</label>
                                             {{ field }}
                                         </div>
                                     {% endfor %}
@@ -91,7 +91,7 @@
 
                                 <div class="CTAs d-flex justify-content-between flex-column flex-lg-row">
                                     <a href="{% url "cart" %}" class="btn btn-template-outlined wide prev">
-                                        <i class="fa fa-angle-left"></i>Back to basket</a>
+                                        <i class="fa fa-angle-left"></i>Retour au panier</a>
                                     <button type="submit" form="form-address" class="btn btn-template btn-lg wide">
                                         Suivant<i class="fa fa-long-arrow-right"></i>
                                     </button>

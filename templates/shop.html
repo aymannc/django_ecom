@@ -8,7 +8,7 @@
                     <h1>Shop</h1></div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Accueil</a></li>
                         <li class="breadcrumb-item active">Shop</li>
                     </ul>
                 </div>
@@ -21,7 +21,7 @@
                 <!-- Sidebar-->
                 <div class="sidebar col-xl-3 col-lg-4 sidebar">
                     <div class="block">
-                        <h6 class="text-uppercase">Product Categories</h6>
+                        <h6 class="text-uppercase">CATÉGORIES DES PRODUITS</h6>
                         <ul class="list-unstyled">
                             {% for category in categories %}
                                 <li><a href="{{ category.get_absolute_url }}"
@@ -47,7 +47,7 @@
                 <!-- Grid -->
                 <div class="products-grid col-xl-9 col-lg-8 sidebar-left">
                     <header class="d-flex justify-content-between align-items-start">
-                        <span class="visible-items">Showing <strong>{{ start }}-{{ end }} </strong>of <strong>{{ count }} </strong>results</span>
+                        <span class="visible-items">Affichage <strong>{{ start }}-{{ end }} </strong>de <strong>{{ count }} </strong>article(s)</span>
                         <form method="post">
                             {% csrf_token %}
                             <select name="order" class="bs-select " onchange="this.form.submit()">

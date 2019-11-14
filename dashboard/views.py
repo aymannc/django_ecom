@@ -639,7 +639,9 @@ def db_delete_message(req, ref):
 
 
 @staff_member_required
-def newsletter(req):
+def db_newsletter(req):
+    if req.POST:
+        messages.success(req, 'Email ajouter')
     newsletters = NewsLetter.objects.all().order_by('-date_added')
     context = {
         "newsletters": newsletters,

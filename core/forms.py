@@ -37,6 +37,15 @@ class MyLoginForm(LoginForm):
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
+        labels = {
+            'full_name': "Nom *",
+            'street_address': "Adresse *",
+            'societe': "Prénom *",
+            'city': "Ville *",
+            'state': "Région *",
+            'country': "Pays *",
+            'phone_number': "Téléphone *",
+        }
         exclude = ('user', 'default',)
 
     def __init__(self, *args, **kwargs):

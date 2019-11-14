@@ -6,21 +6,22 @@
             <div class="row d-flex">
                 <div class="col-lg-9 order-2 order-lg-1">
                     {% if change %}
-                        <h3>Update Delivery Method</h3>
+                        <h3>Modifier le mode de livraison</h3>
                     {% else %}
-                        <h1>Checkout</h1>
-                        <p class="lead">You currently have {% cart_count %} item(s) in your basket</p>
+                        <h1> Mode de livraison</h1>
+                        <p class="lead">Vous avez actuellement {% cart_count %} article (s) dans votre panier</p>
                     {% endif %}
 
 
                 </div>
                 <div class="col-lg-3 text-right order-1 order-lg-2">
                     <ul class="breadcrumb justify-content-lg-end">
-                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Accueil</a></li>
                         {% if change %}
-                            <li class="breadcrumb-item active">Update Delivery Method</li>
+                            <li class="breadcrumb-item active">Modifier le mode de livraison</li>
                         {% else %}
-                            <li class="breadcrumb-item active">Delivery Method</li>
+                            <li class="breadcrumb-item active">Mode de livraison</li>
                         {% endif %}
                     </ul>
                 </div>
@@ -35,16 +36,15 @@
 
                     {% if change %}
                         <div class="block-header mb-2">
-                            <h6 class="text-uppercase">Update Delivery Method</h6>
+                            <h6 class="text-uppercase">Modifier lev</h6>
                         </div>
                     {% else %}
                         <ul class="nav nav-pills">
-                            <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Address</a></li>
-                            <li class="nav-item"><a href={% url "delivery" %} class="nav-link active">Delivery
-                                Method </a>
+                            <li class="nav-item"><a href="{% url "checkout" %}" class="nav-link">Adresse</a></li>
+                            <li class="nav-item"><a href={% url "delivery" %} class="nav-link active">Mode de livraison</a>
                             </li>
-                            <li class="nav-item"><a href="#" class="nav-link disabled">Payment Method </a></li>
-                            <li class="nav-item"><a href="#" class="nav-link disabled">Order Review</a></li>
+                            <li class="nav-item"><a href="#" class="nav-link disabled">Mode de paiement </a></li>
+                            <li class="nav-item"><a href="#" class="nav-link disabled">Commande</a></li>
                         </ul>
                     {% endif %}
 
@@ -109,11 +109,10 @@
 
                             <div class="CTAs d-flex justify-content-between flex-column flex-lg-row">
                                 {% if not change %}
-                                    <a href="checkout1.html" class="btn btn-template-outlined wide prev"><i
-                                            class="fa fa-angle-left"></i>Back to Address</a>
+                                    <a href="{% url "checkout" %}" class="btn btn-template-outlined wide prev"><i
+                                            class="fa fa-angle-left"></i>Adresse</a>
                                 {% endif %}
-                                <button type="submit " form="shipingform" class="btn btn-template wide">Choose payment
-                                    method <i class="fa fa-angle-right"></i></button>
+                                <button type="submit " form="shipingform" class="btn btn-template wide">Mode de paiement<i class="fa fa-angle-right"></i></button>
 
                             </div>
                         </div>
